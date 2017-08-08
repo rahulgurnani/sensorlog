@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "112051254528",
+    "firebase_url": "https://sensorapp-4fb6f.firebaseio.com",
+    "project_id": "sensorapp-4fb6f",
+    "storage_bucket": "sensorapp-4fb6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112051254528:android:da34ee07019608bc",
+        "android_client_info": {
+          "package_name": "com.curefit.sensorapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "112051254528-tnntj36ltv2dj4jkqf0qhlko7de9tioc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.curefit.sensorapp",
+            "certificate_hash": "923982fd5a443a248404575e4cc3bb6cd20b435e"
+          }
+        },
+        {
+          "client_id": "112051254528-fb2fg4cgl0mrqk9dokeii96hkqq9drnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk9J-6V3HMtQNeM8Qg2v9LpcI5J4smnIk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "112051254528-fb2fg4cgl0mrqk9dokeii96hkqq9drnb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

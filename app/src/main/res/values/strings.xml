@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SensorApp</string>
+    <string name="title_activity_table_view">TableView</string>
+</resources>

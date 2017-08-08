@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.curefit.sensorapp">
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <receiver
+            android:name=".ScreenReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".BootBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".ScreenUpdateService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":sync" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ViewDataActivity"
+            android:label="@string/title_activity_table_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".TableViewScreen"
+            android:label="@string/title_activity_table_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TableViewLight"
+            android:label="@string/title_activity_table_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".TableViewAcc"
+            android:label="@string/title_activity_table_view"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".SensorUpdateService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":sync" />
+    </application>
+
+</manifest>

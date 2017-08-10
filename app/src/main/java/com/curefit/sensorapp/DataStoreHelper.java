@@ -3,6 +3,7 @@ package com.curefit.sensorapp;
 import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -12,8 +13,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by rahul on 28/07/17.
@@ -21,17 +24,19 @@ import java.util.Locale;
 
 public class DataStoreHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "datastorer.db";
     private static final String SQL_CREATE_ACC = "CREATE TABLE AccData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ACCX REAL, ACCY REAL, ACCZ REAL)";
     private static final String SQL_CREATE_SCREEN= "CREATE TABLE ScreenData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, STATE INTEGER)";
     private static final String SQL_CREATE_LIGHT = "CREATE TABLE LightData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, LIGHT FLOAT)";
     private static final String SQL_CREATE_USER = "CREATE TABLE UserData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, NAME TEXT, EMAIL TEXT)";
+    private static final String SQL_CREATE_STATS = "CREATE TABLE StatsData(ID INTEGER PRIMARY KEY AUTOINCREMENT, SENSORNAME TEXT, LASTTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, NUMBERVALS TEXT)";
 
     private static final String TABLE_ACC = "AccData";
     private static final String TABLE_SCREEN = "ScreenData";
-    private static final String TABLE_LIGHT= "LightData";
-    private static final String TABLE_USER= "UserData";
+    private static final String TABLE_LIGHT = "LightData";
+    private static final String TABLE_USER = "UserData";
+    private static final String TABLE_STATS = "StatsData";
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
@@ -44,11 +49,75 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_LIGHT);
         db.execSQL(SQL_CREATE_SCREEN);
         db.execSQL(SQL_CREATE_USER);
+        db.execSQL(SQL_CREATE_STATS);
     }
 
+    private void updateStatsUtil(String sensorName, String timestamp, String numberVals) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("SENSORNAME", sensorName);
+        values.put("LASTTIME", timestamp);
+        values.put("NUMBERVALS", numberVals);
+
+        long newRowId = db.update(TABLE_STATS, values, "SENSORNAME="+sensorName, null);
+        db.close();
+    }
+
+    public void updateSensorStats(String sensorName) {
+        String selectQuery = "SELECT * FROM " + TABLE_STATS + " WHERE SENSORNAME='" + sensorName + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        String timestamp = getDateTime();
+        if (!cursor.moveToFirst()) {
+            System.out.println("num initializing");
+            ContentValues values = new ContentValues();
+            values.put("SENSORNAME", sensorName);
+            values.put("LASTTIME", timestamp);
+            values.put("NUMBERVALS", "1");
+            db.insert(TABLE_STATS, null, values);
+        }
+        else {
+            System.out.println("num increment");
+            HashMap<String, String> stats = getStats(sensorName);
+            String numUpdates = stats.get("NumUpdates");
+            int num = Integer.parseInt(numUpdates);
+            System.out.println("Num = " + Integer.toString(num));
+            num++;
+            db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put("SENSORNAME", sensorName);
+            values.put("LASTTIME", timestamp);
+            values.put("NUMBERVALS", Integer.toString(num));
+
+            db.update(TABLE_STATS, values, "SENSORNAME='"+sensorName+"'", null);
+
+        }
+        db.close();
+    }
+
+    public HashMap<String, String> getStats(String sensorName) {
+        String selectQuery = "SELECT * FROM " + TABLE_STATS + " WHERE SENSORNAME='" + sensorName + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        HashMap<String, String> stats = new HashMap<String, String>();
+        String timestamp = "-1";
+        String numUpdates = "-1";
+        if(cursor.moveToFirst()) {
+            timestamp = cursor.getString(2);
+            numUpdates = cursor.getString(3);
+        }
+        stats.put("LastTimeStamp", timestamp);
+        stats.put("NumUpdates", numUpdates);
+        System.out.println("--Get stats: "+ sensorName);
+        System.out.println("Timestamp : " + timestamp);
+        System.out.println("Numupdates : " + numUpdates);
+        db.close();
+
+        return stats;
+    }
 
     private PayLoad createPayLoadUtil(SensorData data) {
-        User user = GlobalVariable.getInstance().getUser();
+        User user = this.getUser();
         PayLoad payLoad = new PayLoad(user, data);
         return payLoad;
     }
@@ -56,6 +125,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     private void postPayLoad(PayLoad payLoad) {
         GlobalVariable.getInstance().getFirebaseStoreHelper().sendData(payLoad);
     }
+
     /*
     This function adds accelerometer entries to the database.
      */
@@ -70,10 +140,13 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(TABLE_ACC, null, values);
         // post data to firebase database
         SensorData data = new SensorData(timestamp, accValues);
+        data.setSensorType("Accelerometer");
         PayLoad payLoad = createPayLoadUtil(data);
+
         postPayLoad(payLoad);
         System.out.println("Stored values1");
         db.close();
+        updateSensorStats("Accelerometer");
     }
 
     /*
@@ -92,8 +165,29 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         SensorData data = new SensorData(timestamp, state);
         PayLoad payLoad = createPayLoadUtil(data);
         postPayLoad(payLoad);
-
+        data.setSensorType("Screen");
         db.close();
+        updateSensorStats("Screen");
+    }
+    /*
+        This function adds the screen state to the database, i.e. whether the screen is on or off.
+     */
+    public void addEntryCharging(int state) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        String timestamp = getDateTime();
+        values.put("CURTIME", timestamp);
+        values.put("STATE", state);
+        System.out.println("State : " + Integer.toString(state));
+
+        long newRowId = db.insert(TABLE_SCREEN, null, values);
+        System.out.println("---Stored charging value");
+        SensorData data = new SensorData(timestamp, "Charging", state);
+        PayLoad payLoad = createPayLoadUtil(data);
+        postPayLoad(payLoad);
+        data.setSensorType("Charging");
+        db.close();
+        updateSensorStats("Charging");
     }
 
     /*
@@ -108,10 +202,12 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         long newRowId = db.insert(TABLE_LIGHT, null, values);
         System.out.println("Stored values3");
         SensorData data = new SensorData(timestamp, lightValue);
+        data.setSensorType("Light");
         PayLoad payLoad = createPayLoadUtil(data);
         postPayLoad(payLoad);
 
         db.close();
+        updateSensorStats("Light");
     }
 
     public void addUser(String name, String email) {
@@ -132,6 +228,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIGHT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCREEN);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STATS);
         onCreate(db);
     }
 
@@ -155,8 +252,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
         return;
     }
-
-
 
     public List<SensorData> getAllDataAcc() {
         Log.d("In function", "getAllData");
@@ -233,6 +328,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         return entries;
     }
 
+
+
     /*
         Get user name and emailid
      */
@@ -259,7 +356,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     /*
         Utility function for getting the current time, it's used for time stamps stored
      */
-    private String getDateTime() {
+    public static String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 DATE_FORMAT, Locale.getDefault());
         Date date = new Date();

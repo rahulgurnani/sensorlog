@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
         nameText = (EditText) findViewById(R.id.nameText);
         emailText = (EditText) findViewById(R.id.emailText);
         if(user!=null) {
+            if (user.name != null && user.email != null) {
+                performLogin(user);
+            }
             if (user.name != null) {
                 nameText.setText(user.name);
             }
@@ -35,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void performLogin(User user) {
+        Context context = getApplicationContext();
+
+        globalVariable = GlobalVariable.getInstance();
+        globalVariable.setUser(user);
+        globalVariable.setContext(context);
+
+        startActivity(new Intent(MainActivity.this, ViewDataActivity.class));
+    }
     final View.OnClickListener loginButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -48,19 +60,13 @@ public class MainActivity extends AppCompatActivity {
             }
             if (email.isEmpty() || email == null) {
                 Context context = getApplicationContext();
-                Toast.makeText(context, "Please Enter Name", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "Please Enter Email", Toast.LENGTH_SHORT);
                 return;
             }
             // adding user to database
             dataStoreHelper.addUser(name, email);
             // setting user globally
-            Context context = getApplicationContext();
-
-            globalVariable = GlobalVariable.getInstance();
-            globalVariable.setUser(new User(name, email));
-            globalVariable.setContext(context);
-
-            startActivity(new Intent(MainActivity.this, ViewDataActivity.class));
+            performLogin(new User(name, email));
         }
     };
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.curefit.sensorapp.StatsActivity">
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="135dp"
+        android:layout_height="30dp"
+        android:text="Number of Updates : "
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="50dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="136dp"
+        android:layout_height="30dp"
+        android:text="Last update:"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="150dp"
+        android:layout_marginLeft="50dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/SensorName"
+        android:layout_width="177dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="50dp"
+        android:text="SensorName:"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="50dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/value1"
+        android:layout_width="129dp"
+        android:layout_height="33dp"
+        android:text="TextView"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="100dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView2"
+        android:layout_marginLeft="30dp" />
+
+    <TextView
+        android:id="@+id/value2"
+        android:layout_width="128dp"
+        android:layout_height="31dp"
+        android:text="TextView"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="150dp"
+        app:layout_constraintLeft_toRightOf="@+id/textView3"
+        android:layout_marginLeft="30dp" />
+</android.support.constraint.ConstraintLayout>

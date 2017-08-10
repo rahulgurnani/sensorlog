@@ -99,11 +99,11 @@ public class TableViewAcc extends Activity {
             tr.addView(timestamp);
             magnitude = new TextView(this);
 
-            magnitude.setText(Double.toString(computeMagnitude(list.get(i).getAccValues())));
-            magnitude.setTextColor(Color.GRAY);
-            magnitude.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-            magnitude.setPadding(5,5,5,0);
-            tr.addView(magnitude);
+//            magnitude.setText(Double.toString(computeMagnitude(list.get(i).getAccValues())));
+//            magnitude.setTextColor(Color.GRAY);
+//            magnitude.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+//            magnitude.setPadding(5,5,5,0);
+//            tr.addView(magnitude);
 
             // Add the TableRow to the TableLayout
             tl.addView(tr, new TableLayout.LayoutParams(

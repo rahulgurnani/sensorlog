@@ -1,5 +1,6 @@
 package com.curefit.sensorapp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,14 +9,39 @@ import java.util.List;
 
 public class SensorData {
     private String timestamp;
-    private float accValues[];
+    private List<Float> accValues;
     private float lightValue;
     private int screenValue;
-    public SensorData() {}
+    private String sensorType;
+    private int batteryState;
 
+    public SensorData() {
+        accValues = new ArrayList<Float>(3);
+    }
+    private float[] listToArray(List<Float> l) {
+        float[] accValues = new float[l.size()];
+        for (int i = 0; i < l.size(); i++) {
+            accValues[i] = l.get(i).floatValue();
+        }
+        return accValues;
+    }
+
+    public void setSensorType(String sensorType) {
+        this.sensorType = sensorType;
+    }
+
+    private List<Float> arrayToList(float[] array) {
+
+        List<Float> list = new ArrayList<Float>();
+        for (int i=0; i < array.length; i++) {
+            Float f = (Float) array[i];
+            list.add(f);
+        }
+        return list;
+    }
     public SensorData(String timestamp, float accValues[]) {
         this.timestamp = timestamp;
-        this.accValues = accValues;
+        this.accValues = arrayToList(accValues);
     }
 
     public SensorData(String timestamp, float lightValue) {
@@ -26,6 +52,10 @@ public class SensorData {
     public SensorData(String timestamp, int screenValue) {
         this.timestamp = timestamp;
         this.screenValue = screenValue;
+    }
+
+    public SensorData(String timestamp, String sensorType, int batteryState) {
+        this.batteryState = batteryState;
     }
 
     public void setTimestamp(String timestamp) {
@@ -44,7 +74,11 @@ public class SensorData {
         return screenValue;
     }
 
-    public float[] getAccValues() {
+    public List<Float> getAccValues() {
         return accValues;
+    }
+
+    public String getSensorType() {
+        return sensorType;
     }
 }

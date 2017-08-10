@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ViewDataActivity extends AppCompatActivity {
     private DataStoreHelper dsh;
@@ -28,7 +29,9 @@ public class ViewDataActivity extends AppCompatActivity {
         final Button button3 = (Button) findViewById(R.id.button3);
         button3.setOnClickListener(myButton_Listener3);
         final Button button4 = (Button) findViewById(R.id.button4);
-//        button4.setOnClickListener(myButton_Listener4);
+        button4.setOnClickListener(myButton_Listener4);
+        TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
+        welcomeUser.setText("Welcome " + globalVariable.getUser().name);
 //        final Button button5 = (Button) findViewById(R.id.button1);
         // starting service
         Intent i = new Intent(this, SensorUpdateService.class);
@@ -49,20 +52,26 @@ public class ViewDataActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             System.out.println("Button 2 pressed");
-            startActivity(new Intent(ViewDataActivity.this, TableViewLight.class));
-            System.out.println("Outside loop");
+            Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
+            intent.putExtra("SENSOR_TYPE", "Light");
+            startActivity(intent);
         }
     };
     final View.OnClickListener myButton_Listener3 = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 3 pressed");
-            startActivity(new Intent(ViewDataActivity.this, TableViewScreen.class));
+            Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
+            intent.putExtra("SENSOR_TYPE", "Screen");
+            startActivity(intent);
         }
     };
     final View.OnClickListener myButton_Listener4 = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 4 pressed");
-            startActivity(new Intent(ViewDataActivity.this, TableViewAcc.class));
+            Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
+            intent.putExtra("SENSOR_TYPE", "Accelerometer");
+            startActivity(intent);
+
         }
     };
 

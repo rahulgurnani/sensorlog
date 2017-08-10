@@ -22,6 +22,8 @@ import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
 
+import static java.lang.Math.abs;
+
 public class SensorUpdateService extends Service implements SensorEventListener {
     private DataStoreHelper dsh;
     private SensorManager sensorManager;
@@ -30,6 +32,7 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     private long startTime;
     private long startTimeLightSensor;
     private float lastValues[];
+    private float lastLightValue;
 
     public SensorUpdateService() {
         System.out.println("Sensor update service activated");
@@ -46,13 +49,18 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         sensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
         System.out.println("Registered listener");
         FirebaseApp.initializeApp(this);
-        // Dealing with broadcast receiver for sensor update
+        // Dealing with broadcast receiver for screen sensor update
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         BroadcastReceiver mReceiver = new ScreenReceiver();
         registerReceiver(mReceiver, filter);
         startTime = startTimeLightSensor = 0;
 //        startForeground(1, );
+        // Broadcast receiver for changes in battery state
+        BroadcastReceiver batteryReceiver = new PowerConnectionReceiver();
+        filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        registerReceiver(batteryReceiver, filter);
+
         return START_STICKY;
 
     }
@@ -80,7 +88,7 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if ((System.currentTimeMillis() - startTime) > 1000 && vectorialDistance(sensorEvent.values, lastValues) > 0.3) {
+            if ((System.currentTimeMillis() - startTime) > 1000 && vectorialDistance(sensorEvent.values, lastValues) > 2) {
                 dsh.addEntry(sensorEvent.values);
                 lastValues[0] = sensorEvent.values[0];
                 lastValues[1]= sensorEvent.values[1];
@@ -91,10 +99,11 @@ public class SensorUpdateService extends Service implements SensorEventListener 
             }
         }
         else if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
-            if ((System.currentTimeMillis() - startTimeLightSensor) > 1000) {
+            if ((System.currentTimeMillis() - startTimeLightSensor) > 1000 && abs(lastLightValue - sensorEvent.values[0]) > 2) {
                 dsh.addEntry(sensorEvent.values[0]);
                 startTimeLightSensor = System.currentTimeMillis();
                 System.out.println("Light sensor changed");
+                lastLightValue = sensorEvent.values[0];
             }
         }
     }

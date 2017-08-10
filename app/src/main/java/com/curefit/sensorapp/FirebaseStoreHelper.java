@@ -16,9 +16,17 @@ public class FirebaseStoreHelper {
         mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl(url);
     }
     public void sendData(PayLoad payLoad) {
-        GlobalVariable globalVariable = GlobalVariable.getInstance();
+        DatabaseReference newRef = mDatabase.child("DataNode ");
+        String email = payLoad.getUser().email;
 
-        DatabaseReference newRef = mDatabase.child("DataNode").push();
+        // these characters are not acceptible by firebase for node names
+        char characters [] = {'.', '#', '$', '[', ']'};
+        for (char c: characters){
+            email = email.replace(c, '-');
+        }
+
+        newRef = newRef.child(email);
+        newRef = newRef.child(payLoad.timestamp);
         newRef.setValue(payLoad);
     }
 }

@@ -37,10 +37,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcomeText"
         android:layout_width="136dp"
         android:layout_height="28dp"
-        android:text="Hello"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="29dp" />
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.curefit.sensorapp">
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+
 
     <application
         android:allowBackup="true"
@@ -16,6 +18,12 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".PowerConnectionReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
         </receiver>
         <receiver
@@ -33,6 +41,11 @@
             android:enabled="true"
             android:exported="true"
             android:process=":sync" />
+        <service
+            android:name=".BatteryUpdateService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":sync" />
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -41,12 +54,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ViewDataActivity"
             android:label="@string/title_activity_table_view"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".TableViewScreen"
             android:label="@string/title_activity_table_view"
@@ -65,6 +76,8 @@
             android:enabled="true"
             android:exported="true"
             android:process=":sync" />
+
+        <activity android:name=".StatsActivity"></activity>
     </application>
 
 </manifest>

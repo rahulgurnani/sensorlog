@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.curefit.sensorapp.SleepTime">
+
+    <Button
+        android:id="@+id/starttime"
+        android:layout_width="121dp"
+        android:layout_height="73dp"
+        android:text="Start Time"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="150dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <Button
+        android:id="@+id/endtime"
+        android:layout_width="118dp"
+        android:layout_height="66dp"
+        android:text="End Time"
+        android:onClick="statTimePicker"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="230dp"
+        android:layout_marginLeft="150dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
+</android.support.constraint.ConstraintLayout>

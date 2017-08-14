@@ -39,6 +39,7 @@ public class SensorData {
         }
         return list;
     }
+
     public SensorData(String timestamp, float accValues[]) {
         this.timestamp = timestamp;
         this.accValues = arrayToList(accValues);
@@ -80,5 +81,9 @@ public class SensorData {
 
     public String getSensorType() {
         return sensorType;
+    }
+
+    public int getBatteryState() {
+        return batteryState;
     }
 }

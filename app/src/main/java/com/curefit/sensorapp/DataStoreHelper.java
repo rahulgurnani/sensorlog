@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -116,7 +117,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         return stats;
     }
 
-    private PayLoad createPayLoadUtil(SensorData data) {
+    private PayLoad createPayLoadUtil(Object data) {
         User user = this.getUser();
         PayLoad payLoad = new PayLoad(user, data);
         return payLoad;
@@ -149,6 +150,21 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         updateSensorStats("Accelerometer");
     }
 
+    public void addEntryTime(String name, int hour, int minute) {
+        System.out.println("Add entry");
+        System.out.println(name);
+        System.out.println(hour);
+        System.out.println(minute);
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("sensorType", "User input");
+        data.put("name", name);
+        data.put("hour", Integer.toString(hour));
+        data.put("minute", Integer.toString(minute));
+        SQLiteDatabase db = this.getWritableDatabase();
+        PayLoad payLoad = createPayLoadUtil(data);
+        postPayLoad(payLoad);
+        db.close();
+    }
     /*
         This function adds the screen state to the database, i.e. whether the screen is on or off.
      */
@@ -164,8 +180,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         System.out.println("---Stored values2");
         SensorData data = new SensorData(timestamp, state);
         PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad);
         data.setSensorType("Screen");
+        postPayLoad(payLoad);
+
         db.close();
         updateSensorStats("Screen");
     }
@@ -184,8 +201,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         System.out.println("---Stored charging value");
         SensorData data = new SensorData(timestamp, "Charging", state);
         PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad);
         data.setSensorType("Charging");
+        postPayLoad(payLoad);
         db.close();
         updateSensorStats("Charging");
     }
@@ -252,7 +269,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
         return;
     }
-
     public List<SensorData> getAllDataAcc() {
         Log.d("In function", "getAllData");
         SQLiteDatabase db = this.getWritableDatabase();

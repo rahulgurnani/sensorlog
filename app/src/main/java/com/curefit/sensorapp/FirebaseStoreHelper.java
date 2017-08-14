@@ -11,7 +11,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseStoreHelper {
     private DatabaseReference mDatabase;
 
-
     public FirebaseStoreHelper(String url) {
         mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl(url);
     }

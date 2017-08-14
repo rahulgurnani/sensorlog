@@ -33,6 +33,10 @@ public class ViewDataActivity extends AppCompatActivity {
         TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
         welcomeUser.setText("Welcome " + globalVariable.getUser().name);
 //        final Button button5 = (Button) findViewById(R.id.button1);
+        final Button button5 = (Button) findViewById(R.id.button5);
+        button5.setOnClickListener(myButton_Listener5);
+        final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
+        sleeptimeButton.setOnClickListener(myButton_sleeptime);
         // starting service
         Intent i = new Intent(this, SensorUpdateService.class);
         getApplicationContext().startService(i);
@@ -74,9 +78,26 @@ public class ViewDataActivity extends AppCompatActivity {
 
         }
     };
+    final View.OnClickListener myButton_Listener5 = new View.OnClickListener() {
+        public void onClick(View view) {
+            System.out.println("Button 5 pressed");
+            Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
+            intent.putExtra("SENSOR_TYPE", "Charging");
+            startActivity(intent);
+        }
+    };
 
     @Override
     public void onBackPressed() {
 
     }
+
+    final View.OnClickListener myButton_sleeptime = new View.OnClickListener() {
+        public void onClick(View view) {
+            System.out.println("sleeptime button");
+            Intent intent = new Intent(ViewDataActivity.this, SleepTime.class);
+            startActivity(intent);
+        }
+    };
+
 }

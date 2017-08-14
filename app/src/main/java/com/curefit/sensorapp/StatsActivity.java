@@ -22,7 +22,5 @@ public class StatsActivity extends AppCompatActivity {
         HashMap<String, String> stats = dsh.getStats(sensorName);       // pending < continue >
         valueUpdates.setText(stats.get("NumUpdates"));
         valueTimestamp.setText(stats.get("LastTimeStamp"));
-
     }
-
 }

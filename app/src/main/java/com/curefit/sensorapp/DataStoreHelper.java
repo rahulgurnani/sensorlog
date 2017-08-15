@@ -4,6 +4,7 @@ import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -53,17 +54,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_STATS);
     }
 
-    private void updateStatsUtil(String sensorName, String timestamp, String numberVals) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("SENSORNAME", sensorName);
-        values.put("LASTTIME", timestamp);
-        values.put("NUMBERVALS", numberVals);
-
-        long newRowId = db.update(TABLE_STATS, values, "SENSORNAME="+sensorName, null);
-        db.close();
-    }
-
+    /*
+        This function is called when a new data for a sensor is sent so as to update sensor stats for that sensorType.
+     */
     public void updateSensorStats(String sensorName) {
         String selectQuery = "SELECT * FROM " + TABLE_STATS + " WHERE SENSORNAME='" + sensorName + "'";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -135,6 +128,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         String timestamp = getDateTime();
         values.put("CURTIME", timestamp);
+
         values.put("ACCX", accValues[0]);
         values.put("ACCY", accValues[1]);
         values.put("ACCZ", accValues[2]);

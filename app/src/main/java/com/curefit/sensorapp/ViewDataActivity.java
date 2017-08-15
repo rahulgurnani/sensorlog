@@ -1,14 +1,22 @@
 package com.curefit.sensorapp;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 public class ViewDataActivity extends AppCompatActivity {
     private DataStoreHelper dsh;
@@ -97,7 +105,10 @@ public class ViewDataActivity extends AppCompatActivity {
             System.out.println("sleeptime button");
             Intent intent = new Intent(ViewDataActivity.this, SleepTime.class);
             startActivity(intent);
+
         }
     };
+
+
 
 }

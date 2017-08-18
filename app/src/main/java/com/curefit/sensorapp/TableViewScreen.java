@@ -15,7 +15,9 @@ import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 
 import java.util.List;
-
+/*
+Was using this to view readings of screen in a table view. Redundant code now.
+ */
 public class TableViewScreen extends Activity {
     TableLayout tl;
     TableRow tr;

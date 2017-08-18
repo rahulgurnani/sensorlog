@@ -19,8 +19,10 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".NotificationPublisher" />
 
+        <receiver android:name=".NotificationPublisher" android:process=":remote"></receiver>
+
+        
         <receiver android:name=".PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />

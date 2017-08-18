@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.util.HashMap;
-
+/*
+    StatsActivity is used to show activity.
+ */
 public class StatsActivity extends AppCompatActivity {
 
     private String sensorName;

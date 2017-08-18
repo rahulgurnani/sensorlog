@@ -20,6 +20,9 @@ import android.text.format.DateFormat;
 
 import java.util.Calendar;
 
+/*
+SleepTime activity to get user start and end sleep time.
+ */
 public class SleepTime extends AppCompatActivity {
 
     @Override
@@ -63,6 +66,14 @@ public class SleepTime extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
+            if (this.getArguments().getString("name").equals("start")) {
+                hour = 20;
+                minute = 0;
+            }
+            if (this.getArguments().getString("name").equals("end")) {
+                hour = 9;
+                minute = 0;
+            }
             DataStoreHelper dataStoreHelper = new DataStoreHelper(getActivity());
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,

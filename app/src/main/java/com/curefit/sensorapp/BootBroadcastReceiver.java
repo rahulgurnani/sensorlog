@@ -8,6 +8,9 @@ import android.content.Intent;
  * Created by rahul on 04/08/17.
  */
 
+/*
+    BroadcastReceiver called when boot is completed.
+ */
 public class BootBroadcastReceiver extends BroadcastReceiver {
     static final String ACTION = "android.intent.action.BOOT_COMPLETED";
     @Override

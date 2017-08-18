@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
                 emailText.setText(user.email);
             }
         }
+        scheduleNotification();
+
     }
 
     private void performLogin(User user) {
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             // schedule notification for recording the sleeping time of the user.
-            scheduleNotification(getNotification("Please share your bed time"));
+
             // adding user to database
             dataStoreHelper.addUser(name, email);
             // setting user globally
@@ -83,51 +85,23 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void scheduleNotification(Notification notification) {
+    private void scheduleNotification() {
         System.out.println("scheduled notification");
 
-        Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(this, NotificationPublisher.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Calendar calendar = Calendar.getInstance();
-
-        calendar.set(Calendar.HOUR_OF_DAY, 13); // For 1 PM or 2 PM
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
 
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        System.out.println("Alarm set");
     }
-    /*
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-
-        intent.setClass(this.context, NewCommit.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        PendingIntent sender = PendingIntent.getBroadcast(this.context, 192839, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-
-        NotificationCompat.Builder noti = new NotificationCompat.Builder(this.context)
-                .setSmallIcon(R.drawable.status_bar_icon)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
-                .setContentIntent(sender);
 
 
-        noti.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-
-
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(181818, noti.build());
-
-     */
-    private Notification getNotification(String content) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setContentTitle("Record your sleeptime");
-        builder.setContentText(content);
-        builder.setSmallIcon(R.drawable.time_icon);
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        builder.setSound(alarmSound);
-        return builder.build();
-    }
 }

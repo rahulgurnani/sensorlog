@@ -13,6 +13,9 @@ import android.support.annotation.Nullable;
  * Created by rahul on 31/07/17.
  */
 
+/*
+    Service to update battery state change
+ */
 public class BatteryUpdateService extends Service {
 
     private DataStoreHelper dsh;

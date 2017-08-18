@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
+/*
+This is for the screen that appears after login, where there are buttons for setting sleep time etc.
+ */
 public class ViewDataActivity extends AppCompatActivity {
     private DataStoreHelper dsh;
     @Override

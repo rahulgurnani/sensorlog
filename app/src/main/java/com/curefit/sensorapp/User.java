@@ -4,6 +4,9 @@ package com.curefit.sensorapp;
  * Created by rahul on 08/08/17.
  */
 
+/*
+    Class to store user data.
+ */
 public class User {
     String name, email;
 

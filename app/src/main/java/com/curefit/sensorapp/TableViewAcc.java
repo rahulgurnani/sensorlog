@@ -16,6 +16,11 @@ import android.widget.TableRow.LayoutParams;
 
 import java.util.List;
 
+/*
+Was using this to view readings of accelerometer in a table view. Redundant code now.
+ */
+
+
 public class TableViewAcc extends Activity {
     TableLayout tl;
     TableRow tr;

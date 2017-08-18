@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 
 import java.util.List;
+/*
+Was using this to view readings of light in a table view. Redundant code now.
+ */
 
 public class TableViewLight extends Activity {
     TableLayout tl;

@@ -1,8 +1,10 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+
+import com.curefit.sensorapp.services.ScreenUpdateService;
 
 /**
  * Created by rahul on 31/07/17.

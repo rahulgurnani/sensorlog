@@ -1,21 +1,21 @@
 package com.curefit.sensorapp;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
+import com.curefit.sensorapp.data.User;
+import com.curefit.sensorapp.db.DataStoreHelper;
+import com.curefit.sensorapp.sync.AccountGeneral;
+import com.curefit.sensorapp.sync.SyncAdapter;
+import com.curefit.sensorapp.sync.SyncUtils;
 
 import java.util.Calendar;
 
@@ -31,22 +31,24 @@ public class MainActivity extends AppCompatActivity {
         final Button loginButton = (Button) findViewById(R.id.login);
         loginButton.setOnClickListener(loginButtonListener);
 
-        dataStoreHelper = new DataStoreHelper(this);
+        dataStoreHelper = DataStoreHelper.getInstance(this);
         User user = dataStoreHelper.getUser();
         nameText = (EditText) findViewById(R.id.nameText);
         emailText = (EditText) findViewById(R.id.emailText);
         if(user!=null) {
-            if (user.name != null && user.email != null) {
+            if (user.getName() != null && user.getEmail()!= null) {
                 performLogin(user);
             }
-            if (user.name != null) {
-                nameText.setText(user.name);
+            if (user.getName()!= null) {
+                nameText.setText(user.getName());
             }
-            if (user.email != null){
-                emailText.setText(user.email);
+            if (user.getEmail()!= null){
+                emailText.setText(user.getEmail());
             }
         }
         scheduleNotification();
+
+
 
     }
 
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
         globalVariable = GlobalVariable.getInstance();
         globalVariable.setUser(user);
         globalVariable.setContext(context);
+//        SyncUtils.CreateSyncAccount(this);
+//        SyncAdapter.performSync();
 
         startActivity(new Intent(MainActivity.this, ViewDataActivity.class));
     }

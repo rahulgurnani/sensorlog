@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
+
+import com.curefit.sensorapp.db.DataStoreHelper;
 
 import java.util.List;
 /*
@@ -26,7 +23,7 @@ public class TableViewScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dsh = new DataStoreHelper(this);
+        dsh = DataStoreHelper.getInstance(this);
         setContentView(R.layout.activity_table_view);
         tl = (TableLayout) findViewById(R.id.maintable);
         addHeaders();

@@ -1,5 +1,8 @@
 package com.curefit.sensorapp;
 
+import com.curefit.sensorapp.data.User;
+import com.curefit.sensorapp.db.DataStoreHelper;
+
 /**
  * Created by rahul on 08/08/17.
  */

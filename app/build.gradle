@@ -29,7 +29,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.+'
+    // firebase
     compile 'com.google.firebase:firebase-database:9.6.1'
     testCompile 'junit:junit:4.12'
+    // Realm
+    compile 'io.realm:realm-android:0.82.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

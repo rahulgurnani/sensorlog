@@ -1,22 +1,20 @@
 package com.curefit.sensorapp;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 
-import android.os.Bundle;
 import android.widget.TimePicker;
 
 import android.text.format.DateFormat;
+
+import com.curefit.sensorapp.db.DataStoreHelper;
 
 import java.util.Calendar;
 
@@ -74,7 +72,7 @@ public class SleepTime extends AppCompatActivity {
                 hour = 9;
                 minute = 0;
             }
-            DataStoreHelper dataStoreHelper = new DataStoreHelper(getActivity());
+            DataStoreHelper dataStoreHelper = DataStoreHelper.getInstance(getActivity());
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
@@ -83,7 +81,7 @@ public class SleepTime extends AppCompatActivity {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
             System.out.println("Time is Hour : " + Integer.toString(hourOfDay) + " minutes : " + Integer.toString(minute) + " for " + this.getArguments().getString("name")) ;
-            DataStoreHelper dsh = new DataStoreHelper(getActivity());
+            DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
             dsh.addEntryTime(this.getArguments().getString("name"), hourOfDay, minute);
         }
     }

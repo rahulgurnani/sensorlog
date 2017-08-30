@@ -1,13 +1,11 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+
+import com.curefit.sensorapp.db.DataStoreHelper;
 
 /**
  * Created by rahul on 31/07/17.
@@ -21,15 +19,16 @@ public class BatteryUpdateService extends Service {
     private DataStoreHelper dsh;
     @Override
     public void onCreate() {
-
         super.onCreate();
-        dsh = new DataStoreHelper(this);
+
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        dsh = DataStoreHelper.getInstance(this);
         System.out.println("Battery update Service started");
         boolean chargingState = intent.getBooleanExtra("charging_state", false);
+
         if (!chargingState) {
             System.out.println("Not charging");
             // write code to store the data to database

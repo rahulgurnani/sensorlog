@@ -2,6 +2,8 @@ package com.curefit.sensorapp;
 
 import android.content.Context;
 
+import com.curefit.sensorapp.data.User;
+
 /**
  * Created by rahul on 08/08/17.
  */
@@ -13,7 +15,7 @@ public class GlobalVariable {
     private FirebaseStoreHelper firebaseStoreHelper;
     private User user;
     private static GlobalVariable globalVariable = null;
-    public static final String URL = "set_firebase_url_here";     // Firebase storage URL
+    public static final String URL = "https://sensorapp-4fb6f.firebaseio.com";     // Firebase storage URL
     private static Context context;
 
     /*
@@ -51,7 +53,6 @@ public class GlobalVariable {
     }
 
     public FirebaseStoreHelper getFirebaseStoreHelper() {
-
         return firebaseStoreHelper;
     }
 

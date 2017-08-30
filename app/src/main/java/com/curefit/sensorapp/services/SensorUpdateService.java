@@ -1,31 +1,20 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.services;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
-import android.app.job.JobService;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 
+import com.curefit.sensorapp.db.DataStoreHelper;
+import com.curefit.sensorapp.receivers.PowerConnectionReceiver;
+import com.curefit.sensorapp.receivers.ScreenReceiver;
 import com.google.firebase.FirebaseApp;
-
-import java.util.Calendar;
 
 import static java.lang.Math.abs;
 
@@ -41,30 +30,31 @@ public class SensorUpdateService extends Service implements SensorEventListener 
 
     public SensorUpdateService() {
         System.out.println("Sensor update service activated");
-        dsh = new DataStoreHelper(this);
-        lastValues = new float[3];
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        dsh = DataStoreHelper.getInstance(this);
+        lastValues = new float[3];
+        FirebaseApp.initializeApp(this);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         mLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         sensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
         System.out.println("Registered listener");
-        FirebaseApp.initializeApp(this);
+
         // Dealing with broadcast receiver for screen sensor update
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         BroadcastReceiver mReceiver = new ScreenReceiver();
         registerReceiver(mReceiver, filter);
         startTime = startTimeLightSensor = 0;
-//        startForeground(1, );
+
         // Broadcast receiver for changes in battery state
         BroadcastReceiver batteryReceiver = new PowerConnectionReceiver();
         filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        registerReceiver(batteryReceiver, filter);
+        registerReceiver(batteryReceiver, filter);      // TODO : Check if there we have to unregister.
 
         return START_STICKY;
 

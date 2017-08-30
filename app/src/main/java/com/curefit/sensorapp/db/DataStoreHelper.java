@@ -1,24 +1,24 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.db;
 
-import android.app.job.JobScheduler;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.DateFormat;
+import com.curefit.sensorapp.GlobalVariable;
+import com.curefit.sensorapp.PayLoad;
+import com.curefit.sensorapp.SensorData;
+import com.curefit.sensorapp.data.User;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 /**
  * Created by rahul on 28/07/17.
@@ -42,8 +42,11 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    public DataStoreHelper(Context context) {
+    private static DataStoreHelper dsh = null;
+    private SQLiteDatabase db;
+    private DataStoreHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -52,6 +55,17 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_SCREEN);
         db.execSQL(SQL_CREATE_USER);
         db.execSQL(SQL_CREATE_STATS);
+    }
+
+    public SQLiteDatabase getDb() {
+        return this.getWritableDatabase();
+    }
+
+    public static DataStoreHelper getInstance(Context context) {
+        if(dsh == null) {
+            dsh = new DataStoreHelper(context);
+        }
+        return dsh;
     }
 
     /*
@@ -84,7 +98,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
             values.put("NUMBERVALS", Integer.toString(num));
 
             db.update(TABLE_STATS, values, "SENSORNAME='"+sensorName+"'", null);
-
         }
         db.close();
     }
@@ -120,6 +133,79 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         GlobalVariable.getInstance().getFirebaseStoreHelper().sendData(payLoad);
     }
 
+    /**
+     * Safely compare two dates, null being considered "greater" than a Date
+     * @return the earliest of the two
+     */
+    public static Date least(Date a, Date b) {
+        return a == null ? b : (b == null ? a : (a.before(b) ? a : b));
+    }
+
+    private Date parseDate(String d) {
+        if(d.equals("")) {
+            return null;
+        }
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        Date date = new Date();
+        try {
+            date = format.parse(d);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return date;
+    }
+
+    private String getFirstTimeEntry(String tableName) {
+        // get first time entry from the table name data base.
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + tableName + " LIMIT 10";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        System.out.println("Get first time entry");
+        List<SensorData> entries = new ArrayList<SensorData>();
+        String timestamp = "";
+        if (cursor.moveToFirst()) {
+            timestamp = cursor.getString(1);
+        }
+        db.close();
+
+        return timestamp;
+    }
+
+
+    private Date getMinTime() {
+        // get minimum timestamps out of the various tables present.
+        String timestampAcc = getFirstTimeEntry(TABLE_ACC);
+        String timestampLight = getFirstTimeEntry(TABLE_LIGHT);
+        String timestampScreen = getFirstTimeEntry(TABLE_SCREEN);
+        Date dateAcc = parseDate(timestampAcc);
+        Date dateLight = parseDate(timestampLight);
+        Date dateScreen = parseDate(timestampScreen);
+
+        Date l = least(dateAcc, least(dateLight, dateScreen));
+
+        return l;
+    }
+
+    private void sendAllData() {
+
+    }
+
+    private boolean checkAndSendData(String timestamp) {
+        // check and send data is used to send
+        Date d1 = getMinTime();
+        Date d2 = parseDate(timestamp);
+        long difference = d2.getTime() - d1.getTime();
+        if ( (difference/1000) > (30 * 60)) {
+            sendAllData();
+            return true;
+        }
+
+        return false;
+    }
+
+
+
     /*
     This function adds accelerometer entries to the database.
      */
@@ -136,6 +222,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         // post data to firebase database
         SensorData data = new SensorData(timestamp, accValues);
         data.setSensorType("Accelerometer");
+
+        // check for time if there is a difference of more than 30 minutes, then send the data etc.
         PayLoad payLoad = createPayLoadUtil(data);
 
         postPayLoad(payLoad);
@@ -145,10 +233,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     }
 
     public void addEntryTime(String name, int hour, int minute) {
-        System.out.println("Add entry");
-        System.out.println(name);
-        System.out.println(hour);
-        System.out.println(minute);
+        /*
+            This information may not be sent with delay, moreover send all the sensor data along with it.
+         */
         HashMap<String, String> data = new HashMap<String, String>();
         data.put("sensorType", "User input");
         data.put("name", name);
@@ -163,6 +250,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         This function adds the screen state to the database, i.e. whether the screen is on or off.
      */
     public void addEntry(int state) {
+        /*
+            This information will be sent with atleast a gap of 30 minutes
+         */
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String timestamp = getDateTime();
@@ -176,7 +266,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         PayLoad payLoad = createPayLoadUtil(data);
         data.setSensorType("Screen");
         postPayLoad(payLoad);
-
         db.close();
         updateSensorStats("Screen");
     }
@@ -184,6 +273,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         This function adds the screen state to the database, i.e. whether the screen is on or off.
      */
     public void addEntryCharging(int state) {
+        /*
+           This information will be sent with atleast a gap of 30 minutes
+         */
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String timestamp = getDateTime();
@@ -228,7 +320,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         values.put("NAME", name);
         values.put("EMAIL", email);
 
-        long newRowId = db.insert(TABLE_USER, null, values);
+        db.insert(TABLE_USER, null, values);
 
         System.out.println("added user");
         db.close();
@@ -278,7 +370,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
                 accValues[0] = Float.parseFloat(cursor.getString(2));
                 accValues[1] = Float.parseFloat(cursor.getString(3));
                 accValues[2] = Float.parseFloat(cursor.getString(4));
-
                 SensorData entry = new SensorData(cursor.getString(1), accValues);
                 entries.add(entry);
             } while (cursor.moveToNext());
@@ -318,7 +409,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         Function returns all the light sensor data
      */
     public List<SensorData> getAllDataLight() {
-
         Log.d("In function", "getAllData");
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_LIGHT;
@@ -337,8 +427,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.close();
         return entries;
     }
-
-
 
     /*
         Get user name and emailid

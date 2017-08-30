@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.curefit.sensorapp.db.DataStoreHelper;
+
 import java.util.HashMap;
 /*
     StatsActivity is used to show activity.
@@ -20,7 +22,7 @@ public class StatsActivity extends AppCompatActivity {
         sensorNameTextView.setText(sensorName + " Data");
         TextView valueUpdates = (TextView) findViewById(R.id.value1);
         TextView valueTimestamp= (TextView) findViewById(R.id.value2);
-        DataStoreHelper dsh = new DataStoreHelper(this);
+        DataStoreHelper dsh = DataStoreHelper.getInstance(this);
         HashMap<String, String> stats = dsh.getStats(sensorName);       // pending < continue >
         valueUpdates.setText(stats.get("NumUpdates"));
         valueTimestamp.setText(stats.get("LastTimeStamp"));

@@ -1,22 +1,17 @@
 package com.curefit.sensorapp;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.NotificationCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Calendar;
+import com.curefit.sensorapp.db.DataStoreHelper;
+import com.curefit.sensorapp.services.SensorUpdateService;
 
 /*
 This is for the screen that appears after login, where there are buttons for setting sleep time etc.
@@ -28,7 +23,7 @@ public class ViewDataActivity extends AppCompatActivity {
         // initializations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allactions);
-        dsh = new DataStoreHelper(this);
+        dsh = DataStoreHelper.getInstance(this);
 
         GlobalVariable globalVariable = GlobalVariable.getInstance();
 
@@ -42,7 +37,7 @@ public class ViewDataActivity extends AppCompatActivity {
         final Button button4 = (Button) findViewById(R.id.button4);
         button4.setOnClickListener(myButton_Listener4);
         TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
-        welcomeUser.setText("Welcome " + globalVariable.getUser().name);
+        welcomeUser.setText("Welcome " + globalVariable.getUser().getName());
 //        final Button button5 = (Button) findViewById(R.id.button1);
         final Button button5 = (Button) findViewById(R.id.button5);
         button5.setOnClickListener(myButton_Listener5);

@@ -41,6 +41,8 @@ public class ViewDataActivity extends AppCompatActivity {
 //        final Button button5 = (Button) findViewById(R.id.button1);
         final Button button5 = (Button) findViewById(R.id.button5);
         button5.setOnClickListener(myButton_Listener5);
+        final Button button6 = (Button) findViewById(R.id.button6);
+        button6.setOnClickListener(myButton_Listener6);
         final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
         sleeptimeButton.setOnClickListener(myButton_sleeptime);
         // starting service
@@ -89,6 +91,14 @@ public class ViewDataActivity extends AppCompatActivity {
             System.out.println("Button 5 pressed");
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
             intent.putExtra("SENSOR_TYPE", "Charging");
+            startActivity(intent);
+        }
+    };
+
+    final View.OnClickListener myButton_Listener6 = new View.OnClickListener() {
+        public void onClick(View view) {
+            System.out.println("Button 6 pressed");
+            Intent intent = new Intent(ViewDataActivity.this, TableViewScreen.class);
             startActivity(intent);
         }
     };

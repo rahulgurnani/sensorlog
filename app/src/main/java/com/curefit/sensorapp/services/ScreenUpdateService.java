@@ -28,12 +28,12 @@ public class ScreenUpdateService extends Service {
         if (!screenOn) {
             System.out.println("Screen Off");
             // write code to store the data to database
-            dsh.addEntry(0);
+            dsh.addEntryScreen(0);
         }
         else {
             System.out.println("Screen On");
             // write code to store the data to database
-            dsh.addEntry(1);
+            dsh.addEntryScreen(1);
         }
         return START_NOT_STICKY;
     }

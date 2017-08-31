@@ -23,6 +23,7 @@ public class TableViewScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         dsh = DataStoreHelper.getInstance(this);
         setContentView(R.layout.activity_table_view);
         tl = (TableLayout) findViewById(R.id.maintable);

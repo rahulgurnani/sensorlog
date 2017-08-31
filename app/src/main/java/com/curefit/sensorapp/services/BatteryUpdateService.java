@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.curefit.sensorapp.db.DataStoreHelper;
+import com.google.firebase.FirebaseApp;
 
 /**
  * Created by rahul on 31/07/17.
@@ -28,7 +29,7 @@ public class BatteryUpdateService extends Service {
         dsh = DataStoreHelper.getInstance(this);
         System.out.println("Battery update Service started");
         boolean chargingState = intent.getBooleanExtra("charging_state", false);
-
+        FirebaseApp.initializeApp(this);
         if (!chargingState) {
             System.out.println("Not charging");
             // write code to store the data to database

@@ -10,10 +10,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import android.text.format.DateFormat;
 
+import com.curefit.sensorapp.data.SleepData;
 import com.curefit.sensorapp.db.DataStoreHelper;
 
 import java.util.Calendar;
@@ -23,6 +25,11 @@ SleepTime activity to get user start and end sleep time.
  */
 public class SleepTime extends AppCompatActivity {
 
+    int start_hour;
+    int end_hour;
+    int start_minute;
+    int end_minute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +38,19 @@ public class SleepTime extends AppCompatActivity {
         startTime.setOnClickListener(startTimeListener);
         final Button endTime = (Button) findViewById(R.id.endtime);
         endTime.setOnClickListener(endTimeListener);
+        SleepData sleepData = DataStoreHelper.getInstance(this).getSleepData();
+        if (sleepData.getSu()) {
+            TextView updated1 = (TextView) findViewById(R.id.updated1);
+            updated1.setText("Updated");
+        }
+        if (sleepData.getEu()) {
+            TextView updated2 = (TextView) findViewById(R.id.updated2);
+            updated2.setText("Updated");
+        }
+        start_hour = sleepData.getHs();
+        start_minute = sleepData.getMs();
+        end_hour = sleepData.getHe();
+        end_minute = sleepData.getMe();
     }
 
     final View.OnClickListener startTimeListener= new View.OnClickListener() {
@@ -39,6 +59,8 @@ public class SleepTime extends AppCompatActivity {
             DialogFragment newFragment = new TimePickerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("name", "start");
+            bundle.putInt("start_hour", start_hour);
+            bundle.putInt("start_minute", start_minute);
             newFragment.setArguments(bundle);
             newFragment.show(getFragmentManager(), "timePicker");
         }
@@ -50,6 +72,8 @@ public class SleepTime extends AppCompatActivity {
             DialogFragment newFragment = new TimePickerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("name", "end");
+            bundle.putInt("end_hour", end_hour);
+            bundle.putInt("end_minute", end_minute);
             newFragment.setArguments(bundle);
             newFragment.show(getFragmentManager(), "timePicker");
         }
@@ -64,15 +88,17 @@ public class SleepTime extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
+            DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
+
             if (this.getArguments().getString("name").equals("start")) {
-                hour = 20;
-                minute = 0;
+                hour = getArguments().getInt("start_hour");
+                minute = getArguments().getInt("start_minute");
             }
             if (this.getArguments().getString("name").equals("end")) {
-                hour = 9;
-                minute = 0;
+                hour = getArguments().getInt("end_hour");
+                minute = getArguments().getInt("end_minute");
             }
-            DataStoreHelper dataStoreHelper = DataStoreHelper.getInstance(getActivity());
+
             // Create a new instance of TimePickerDialog and return it
             return new TimePickerDialog(getActivity(), this, hour, minute,
                     DateFormat.is24HourFormat(getActivity()));
@@ -80,9 +106,9 @@ public class SleepTime extends AppCompatActivity {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            System.out.println("Time is Hour : " + Integer.toString(hourOfDay) + " minutes : " + Integer.toString(minute) + " for " + this.getArguments().getString("name")) ;
+            System.out.println("Time in Hour : " + Integer.toString(hourOfDay) + " minutes : " + Integer.toString(minute) + " for " + this.getArguments().getString("name")) ;
             DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
-            dsh.addEntryTime(this.getArguments().getString("name"), hourOfDay, minute);
+            dsh.addEntrySleepTime(this.getArguments().getString("name"), hourOfDay, minute);
         }
     }
 }

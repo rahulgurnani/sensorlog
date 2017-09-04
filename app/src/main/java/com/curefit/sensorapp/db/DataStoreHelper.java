@@ -33,12 +33,12 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     // SQL queries for creating tables
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "datastorer.db";
-    private static final String SQL_CREATE_ACC = "CREATE TABLE AccData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ACCX REAL, ACCY REAL, ACCZ REAL)";
-    private static final String SQL_CREATE_SCREEN= "CREATE TABLE ScreenData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, STATE INTEGER)";
-    private static final String SQL_CREATE_LIGHT = "CREATE TABLE LightData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, LIGHT FLOAT)";
-    private static final String SQL_CREATE_USER = "CREATE TABLE UserData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, NAME TEXT, EMAIL TEXT)";
+    private static final String SQL_CREATE_ACC = "CREATE TABLE AccData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, ACCX REAL, ACCY REAL, ACCZ REAL)";
+    private static final String SQL_CREATE_SCREEN= "CREATE TABLE ScreenData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, STATE INTEGER)";
+    private static final String SQL_CREATE_LIGHT = "CREATE TABLE LightData(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURTIME INTEGER, LIGHT FLOAT)";
+    private static final String SQL_CREATE_USER = "CREATE TABLE UserData(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURTIME INTEGER, NAME TEXT, EMAIL TEXT)";
     private static final String SQL_CREATE_STATS = "CREATE TABLE StatsData(ID INTEGER PRIMARY KEY AUTOINCREMENT, SENSORNAME TEXT, LASTTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, NUMBERVALS TEXT)";
-    private static final String SQL_CREATE_SLEEP = "CREATE TABLE SleepData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, HOUR INTEGER, MINUTE INTEGER, TYPE TEXT)";
+    private static final String SQL_CREATE_SLEEP = "CREATE TABLE SleepData(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, HOUR INTEGER, MINUTE INTEGER, TYPE TEXT)";
 
     // Table names
     private static final String TABLE_ACC = "AccData";
@@ -111,6 +111,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
     public HashMap<String, String> getStats(String sensorName) {
         String selectQuery = "SELECT * FROM " + TABLE_STATS + " WHERE SENSORNAME='" + sensorName + "'";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -156,84 +157,14 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         return a == null ? b : (b == null ? a : (a.before(b) ? a : b));
     }
 
-    // redundant, TODO: clean this function
-    private Date parseDate(String d) {
-        if(d.equals("")) {
-            return null;
-        }
-        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
-        Date date = new Date();
-        try {
-            date = format.parse(d);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return date;
-    }
-
-    /*
-        TODO : Remove this
-     */
-    private String getFirstTimeEntry(String tableName) {
-        // get first time entry from the table name data base.
-        SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + tableName + " LIMIT 10";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        System.out.println("Get first time entry");
-        List<SensorData> entries = new ArrayList<SensorData>();
-        String timestamp = "";
-        if (cursor.moveToFirst()) {
-            timestamp = cursor.getString(1);
-        }
-        db.close();
-
-        return timestamp;
-    }
-
-    // TODO: Remove this
-    private Date getMinTime() {
-        // get minimum timestamps out of the various tables present.
-        String timestampAcc = getFirstTimeEntry(TABLE_ACC);
-        String timestampLight = getFirstTimeEntry(TABLE_LIGHT);
-        String timestampScreen = getFirstTimeEntry(TABLE_SCREEN);
-        Date dateAcc = parseDate(timestampAcc);
-        Date dateLight = parseDate(timestampLight);
-        Date dateScreen = parseDate(timestampScreen);
-
-        Date l = least(dateAcc, least(dateLight, dateScreen));
-
-        return l;
-    }
-
-    private void sendAllData() {
-
-    }
-
-    // TODO :remove this
-    private boolean checkAndSendData(String timestamp) {
-        // check and send data is used to send
-        Date d1 = getMinTime();
-        Date d2 = parseDate(timestamp);
-        long difference = d2.getTime() - d1.getTime();
-        if ( (difference/1000) > (30 * 60)) {
-            sendAllData();
-            return true;
-        }
-
-        return false;
-    }
-
-
-
     /*
     This function adds accelerometer entries to the database.
      */
     public void addEntryAcc(float[] accValues) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String timestamp = getDateTime();
-        values.put("CURTIME", timestamp);
+        long currentEpochTime = System.currentTimeMillis();
+        values.put("CURTIME", currentEpochTime);
 
         values.put("ACCX", accValues[0]);
         values.put("ACCY", accValues[1]);
@@ -259,8 +190,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         data.put("minute", Integer.toString(minute));
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String timestamp = getDateTime();
-        values.put("CURTIME", timestamp);
+//        String timestamp = getDateTime();
+        long currentEpochTime = System.currentTimeMillis();
+        values.put("CURTIME", currentEpochTime);
         values.put("HOUR", hour);
         values.put("MINUTE", minute);
         values.put("TYPE", name);
@@ -334,8 +266,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         Log.d("SensorApp", "adding screen entry to the database " + String.valueOf(state));
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String timestamp = getDateTime();
-        values.put("CURTIME", timestamp);
+        long currentTimeMillis = System.currentTimeMillis();
+        values.put("CURTIME", currentTimeMillis);
         values.put("STATE", state);
         System.out.println("State : " + Integer.toString(state));
 
@@ -355,18 +287,18 @@ public class DataStoreHelper extends SQLiteOpenHelper {
          */
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String timestamp = getDateTime();
-        values.put("CURTIME", timestamp);
+        long currentTimeMillis= System.currentTimeMillis();
+        values.put("CURTIME", currentTimeMillis);
         values.put("STATE", state);
         System.out.println("State : " + Integer.toString(state));
 
-//        long newRowId = db.insert(TABLE_, null, values);
-        SensorData data = new SensorData(timestamp, "Charging", state);
-        PayLoad payLoad = createPayLoadUtil(data);
-        data.setSensorType("Charging");
+
+//        SensorData data = new SensorData(timestamp, "Charging", state);
+//        PayLoad payLoad = createPayLoadUtil(data);
+//        data.setSensorType("Charging");
 //        postPayLoad(payLoad, "charging");
         db.close();
-        updateSensorStats("Charging");
+//        updateSensorStats("Charging");
     }
 
     /*
@@ -375,8 +307,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     public void addEntryLight(float lightValue) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String timestamp = getDateTime();
-        values.put("CURTIME", timestamp);
+        long currentEpochTime = System.currentTimeMillis();
+        values.put("CURTIME", currentEpochTime);
         values.put("LIGHT", lightValue);
         db.insert(TABLE_LIGHT, null, values);
 
@@ -395,7 +327,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     public void addUser(String name, String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("CURTIME", getDateTime());
+        long currentEpochTime = System.currentTimeMillis();
+        values.put("CURTIME", currentEpochTime);
         values.put("NAME", name);
         values.put("EMAIL", email);
 

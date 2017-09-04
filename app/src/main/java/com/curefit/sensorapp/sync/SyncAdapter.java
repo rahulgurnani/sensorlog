@@ -79,7 +79,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 accValues[1] = Float.parseFloat(c.getString(2));
                 accValues[2] = Float.parseFloat(c.getString(3));
                 String timestamp = c.getString(0);
-                AccelerometerData data = new AccelerometerData(timestamp, accValues);
+                AccelerometerData data = new AccelerometerData(accValues);
                 accReadings.add(data);
             } while (c.moveToNext());
         }
@@ -96,7 +96,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (c.moveToFirst()) {
             // traverse through c
             do {
-                LightData data = new LightData(c.getString(0), Float.parseFloat(c.getString(1)));
+                LightData data = new LightData(Float.parseFloat(c.getString(1)));
                 lightReadings.add(data);
             }while (c.moveToNext());
         }
@@ -111,7 +111,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (c.moveToFirst()) {
             // traverse through c
             do {
-                ScreenData data = new ScreenData(c.getString(0), Integer.parseInt(c.getString(1)));
+                ScreenData data = new ScreenData(Integer.parseInt(c.getString(1)));
                 screenReadings.add(data);
             }while (c.moveToNext());
         }
@@ -127,8 +127,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             // traverse and take the last one
             do {
                 username = user_c.getString(0);
-                email = user_c.getString
-                        (1);
+                email = user_c.getString(1);
             }while (user_c.moveToNext());
         }
         else {

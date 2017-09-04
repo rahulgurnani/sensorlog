@@ -83,7 +83,7 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            if ((System.currentTimeMillis() - startTime) > 1000 && vectorialDistance(sensorEvent.values, lastValues) > 2) {
+            if (vectorialDistance(sensorEvent.values, lastValues) > 2) {
                 dsh.addEntryAcc(sensorEvent.values);
                 lastValues[0] = sensorEvent.values[0];
                 lastValues[1]= sensorEvent.values[1];
@@ -94,7 +94,7 @@ public class SensorUpdateService extends Service implements SensorEventListener 
             }
         }
         else if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
-            if ((System.currentTimeMillis() - startTimeLightSensor) > 1000 && abs(lastLightValue - sensorEvent.values[0]) > 2) {
+            if (abs(lastLightValue - sensorEvent.values[0]) > 3) {
                 dsh.addEntryLight(sensorEvent.values[0]);
                 startTimeLightSensor = System.currentTimeMillis();
                 System.out.println("Light sensor changed");

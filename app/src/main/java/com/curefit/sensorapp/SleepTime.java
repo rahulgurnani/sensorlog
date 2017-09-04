@@ -30,6 +30,7 @@ public class SleepTime extends AppCompatActivity {
     int start_minute;
     int end_minute;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,15 +39,20 @@ public class SleepTime extends AppCompatActivity {
         startTime.setOnClickListener(startTimeListener);
         final Button endTime = (Button) findViewById(R.id.endtime);
         endTime.setOnClickListener(endTimeListener);
+        timeViewUpdate();
+    }
+
+    private void timeViewUpdate() {
+        System.out.println("Time view updated");
         SleepData sleepData = DataStoreHelper.getInstance(this).getSleepData();
-        if (sleepData.getSu()) {
-            TextView updated1 = (TextView) findViewById(R.id.updated1);
-            updated1.setText("Updated");
-        }
-        if (sleepData.getEu()) {
-            TextView updated2 = (TextView) findViewById(R.id.updated2);
-            updated2.setText("Updated");
-        }
+//        if (sleepData.getSu()) {
+//            TextView updated1 = (TextView) findViewById(R.id.updated1);
+//            updated1.setText("Updated");
+//        }
+//        if (sleepData.getEu()) {
+//            TextView updated2 = (TextView) findViewById(R.id.updated2);
+//            updated2.setText("Updated");
+//        }
         start_hour = sleepData.getHs();
         start_minute = sleepData.getMs();
         end_hour = sleepData.getHe();
@@ -56,6 +62,8 @@ public class SleepTime extends AppCompatActivity {
     final View.OnClickListener startTimeListener= new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            timeViewUpdate();
+            System.out.println("Begin time pressed");
             DialogFragment newFragment = new TimePickerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("name", "start");
@@ -69,6 +77,8 @@ public class SleepTime extends AppCompatActivity {
     final View.OnClickListener endTimeListener= new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            timeViewUpdate();
+            System.out.println("End time pressed");
             DialogFragment newFragment = new TimePickerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("name", "end");
@@ -76,6 +86,7 @@ public class SleepTime extends AppCompatActivity {
             bundle.putInt("end_minute", end_minute);
             newFragment.setArguments(bundle);
             newFragment.show(getFragmentManager(), "timePicker");
+
         }
     };
 
@@ -109,6 +120,7 @@ public class SleepTime extends AppCompatActivity {
             System.out.println("Time in Hour : " + Integer.toString(hourOfDay) + " minutes : " + Integer.toString(minute) + " for " + this.getArguments().getString("name")) ;
             DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
             dsh.addEntrySleepTime(this.getArguments().getString("name"), hourOfDay, minute);
+            System.out.println("Entry add");
         }
     }
 }

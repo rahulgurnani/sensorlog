@@ -39,10 +39,11 @@ public class ViewDataActivity extends AppCompatActivity {
         TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
         welcomeUser.setText("Welcome " + globalVariable.getUser().getName());
 //        final Button button5 = (Button) findViewById(R.id.button1);
-        final Button button5 = (Button) findViewById(R.id.button5);
-        button5.setOnClickListener(myButton_Listener5);
-        final Button button6 = (Button) findViewById(R.id.button6);
-        button6.setOnClickListener(myButton_Listener6);
+
+//        final Button button5 = (Button) findViewById(R.id.button5);
+//        button5.setOnClickListener(myButton_Listener5);
+//        final Button button6 = (Button) findViewById(R.id.button6);
+//        button6.setOnClickListener(myButton_Listener6);
         final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
         sleeptimeButton.setOnClickListener(myButton_sleeptime);
         // starting service
@@ -86,6 +87,7 @@ public class ViewDataActivity extends AppCompatActivity {
 
         }
     };
+    // charging data button
     final View.OnClickListener myButton_Listener5 = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 5 pressed");
@@ -95,6 +97,7 @@ public class ViewDataActivity extends AppCompatActivity {
         }
     };
 
+    // table view with screen data
     final View.OnClickListener myButton_Listener6 = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 6 pressed");
@@ -102,12 +105,6 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
-
-    @Override
-    public void onBackPressed() {
-
-    }
-
     final View.OnClickListener myButton_sleeptime = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("sleeptime button");
@@ -116,7 +113,4 @@ public class ViewDataActivity extends AppCompatActivity {
 
         }
     };
-
-
-
 }

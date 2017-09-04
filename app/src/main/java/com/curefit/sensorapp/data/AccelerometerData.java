@@ -13,34 +13,23 @@ import io.realm.annotations.PrimaryKey;
 
 public class AccelerometerData {
 
-
-    String ts;      // timestamp
-
     List<Float> aV;
 
     // Contructors
     public AccelerometerData() {
 
     }
-    public AccelerometerData(String timestamp, float accValues[]) {
+    public AccelerometerData(float accValues[]) {
         this.aV = new ArrayList<Float>();
-        this.ts = timestamp;
         this.aV.add(accValues[0]);
         this.aV.add(accValues[1]);
         this.aV.add(accValues[2]);
     }
 
     // getters and setters
-    public String getTs() {
-        return ts;
-    }
 
     public List<Float> getaV() {
         return aV;
-    }
-
-    public void setTs(String ts) {
-        this.ts = ts;
     }
 
     public void setaV(List<Float> accValues) {

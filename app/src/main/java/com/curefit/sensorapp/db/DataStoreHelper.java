@@ -11,6 +11,8 @@ import com.curefit.sensorapp.GlobalVariable;
 import com.curefit.sensorapp.PayLoad;
 import com.curefit.sensorapp.SensorData;
 import com.curefit.sensorapp.data.AccelerometerData;
+import com.curefit.sensorapp.data.LightData;
+import com.curefit.sensorapp.data.ScreenData;
 import com.curefit.sensorapp.data.SleepData;
 import com.curefit.sensorapp.data.User;
 
@@ -142,8 +144,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     /*
         Send payload over firebase
      */
-    private void postPayLoad(PayLoad payLoad) {
-        GlobalVariable.getInstance().getFirebaseStoreHelper().sendData(payLoad);
+    private void postPayLoad(PayLoad payLoad, String type) {
+        GlobalVariable.getInstance().getFirebaseStoreHelper().sendData(payLoad, type);
     }
 
     /**
@@ -238,25 +240,20 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         values.put("ACCZ", accValues[2]);
         long newRowId = db.insert(TABLE_ACC, null, values);
         // post data to firebase database
-//        AccelerometerData d = AccelerometerData(timestamp, accValues);
-        SensorData data = new SensorData(timestamp, accValues);
-        data.setSensorType("Accelerometer");
+        AccelerometerData data = new AccelerometerData(accValues);
 
         // check for time if there is a difference of more than 30 minutes, then send the data etc.
         PayLoad payLoad = createPayLoadUtil(data);
 
-        postPayLoad(payLoad);
+        postPayLoad(payLoad, "acc");
         System.out.println("Stored values1");
         db.close();
         updateSensorStats("Accelerometer");
     }
 
     public void addEntrySleepTime(String name, int hour, int minute) {
-        /*
-            This information may not be sent with delay, moreover send all the sensor data along with it.
-         */
         HashMap<String, String> data = new HashMap<String, String>();
-        data.put("sensorType", "User input");
+//        data.put("sensorType", "User input");
         data.put("name", name);
         data.put("hour", Integer.toString(hour));
         data.put("minute", Integer.toString(minute));
@@ -271,7 +268,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.insert(TABLE_SLEEP, null, values);
 
         PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad);
+        postPayLoad(payLoad, "sleeptime");
         db.close();
     }
 
@@ -293,7 +290,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String selectQuery = "SELECT * FROM " + TABLE_SLEEP+ " ORDER BY date(CURTIME) DESC LIMIT 20";      // assuming we will find both start and end time within last 20 querires
+        String selectQuery = "SELECT * FROM " + TABLE_SLEEP+ " ORDER BY CURTIME DESC LIMIT 20";      // assuming we will find both start and end time within last 20 querires
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         System.out.println("Query executed");
@@ -334,7 +331,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
      */
     public void addEntryScreen(int state) {
 
-        Log.d("SensorApp", "addding screen entry to the database " + String.valueOf(state));
+        Log.d("SensorApp", "adding screen entry to the database " + String.valueOf(state));
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         String timestamp = getDateTime();
@@ -343,10 +340,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         System.out.println("State : " + Integer.toString(state));
 
         db.insert(TABLE_SCREEN, null, values);
-        SensorData data = new SensorData(timestamp, state);
+        ScreenData data = new ScreenData(state);
         PayLoad payLoad = createPayLoadUtil(data);
-        data.setSensorType("Screen");
-        postPayLoad(payLoad);
+        postPayLoad(payLoad, "scrn");
         db.close();
         updateSensorStats("Screen");
     }
@@ -368,7 +364,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         SensorData data = new SensorData(timestamp, "Charging", state);
         PayLoad payLoad = createPayLoadUtil(data);
         data.setSensorType("Charging");
-        postPayLoad(payLoad);
+//        postPayLoad(payLoad, "charging");
         db.close();
         updateSensorStats("Charging");
     }
@@ -382,12 +378,12 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         String timestamp = getDateTime();
         values.put("CURTIME", timestamp);
         values.put("LIGHT", lightValue);
-        long newRowId = db.insert(TABLE_LIGHT, null, values);
-        System.out.println("Stored values3");
-        SensorData data = new SensorData(timestamp, lightValue);
-        data.setSensorType("Light");
+        db.insert(TABLE_LIGHT, null, values);
+
+        LightData  data = new LightData(lightValue);
+
         PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad);
+        postPayLoad(payLoad, "light");
 
         db.close();
         updateSensorStats("Light");

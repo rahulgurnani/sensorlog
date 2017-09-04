@@ -7,29 +7,19 @@ import io.realm.RealmObject;
  */
 
 public class ScreenData {
-    private String ts;      // timestamp
+
     private int st;
 
     public ScreenData() {
 
     }
 
-    public ScreenData(String ts, int state) {
-        this.ts = ts;
+    public ScreenData(int state) {
         this.st = state;
-    }
-
-    // getters and setters
-    public String getTs() {
-        return ts;
     }
 
     public int getSt() {
         return st;
-    }
-
-    public void setTs(String ts) {
-        this.ts= ts;
     }
 
     public void setSt(int state) {

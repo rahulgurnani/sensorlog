@@ -9,29 +9,18 @@ import io.realm.annotations.PrimaryKey;
 
 public class LightData {
 
-    private String ts;      // epoch time, Primary key
-
     private float lV;
 
     public LightData() {
 
     }
-    public LightData(String timestamp, float lightValue) {
-        this.ts= timestamp;
+    public LightData(float lightValue) {
         this.lV = lightValue;
     }
 
     // getters and setters for the class
     public float getlV() {
         return lV;
-    }
-
-    public String getTs() {
-        return ts;
-    }
-
-    public void setTs(String timestamp) {
-        this.ts = timestamp;
     }
 
     public void setlV(float lightValue) {

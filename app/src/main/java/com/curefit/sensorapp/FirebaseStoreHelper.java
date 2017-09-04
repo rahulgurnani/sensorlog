@@ -5,6 +5,7 @@ import com.curefit.sensorapp.db.DataStoreHelper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,19 +19,26 @@ public class FirebaseStoreHelper {
     public FirebaseStoreHelper(String url) {
         mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl(url);
     }
-    public void sendData(PayLoad payLoad) {
-        DatabaseReference newRef = mDatabase.child("DataNode");
-        String email = payLoad.getUser().getEmail();
 
+    public void sendData(PayLoad payLoad, String type) {
+        // we will post the data like /NewData/< date >/ <userid> /< time in epoch >
+
+        String email = payLoad.getUser().getEmail();
+        long currentEpochTime = System.currentTimeMillis();
+        String currentTimestamp = DataStoreHelper.getDateTime();
+        String currentDate = currentTimestamp.split("\\s")[0];
         // these characters are not acceptible by firebase for node names
         char characters [] = {'.', '#', '$', '[', ']'};
-        for (char c: characters){
+        for (char c: characters) {
             email = email.replace(c, '-');
         }
 
+        DatabaseReference newRef = mDatabase.child("NewData");
+        newRef = newRef.child(currentDate);
         newRef = newRef.child(email);
-        newRef = newRef.child(payLoad.timestamp);
-        newRef.setValue(payLoad);
+        newRef = newRef.child(type);
+        newRef = newRef.child(String.valueOf(currentEpochTime));
+        newRef.setValue(payLoad.data);
     }
 
     public void sendData(HashMap<String, List> h, User user) {

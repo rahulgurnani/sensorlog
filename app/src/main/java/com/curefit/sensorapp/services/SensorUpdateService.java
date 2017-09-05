@@ -27,10 +27,12 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     private long startTimeLightSensor;
     private float lastValues[];
     private float lastLightValue;
+    private BroadcastReceiver screenReceiver;
 
     public SensorUpdateService() {
         System.out.println("Sensor update service activated");
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -47,8 +49,8 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         // Dealing with broadcast receiver for screen sensor update
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        BroadcastReceiver mReceiver = new ScreenReceiver();
-        registerReceiver(mReceiver, filter);
+        screenReceiver= new ScreenReceiver();
+        registerReceiver(screenReceiver, filter);
         startTime = startTimeLightSensor = 0;
 
         // Broadcast receiver for changes in battery state
@@ -78,6 +80,11 @@ public class SensorUpdateService extends Service implements SensorEventListener 
 
     private double vectorialDistance(float values1[], float values2[]) {
         return Math.sqrt(Math.pow( (values1[0] - values2[0]), 2) + Math.pow( (values1[0] - values2[0]), 2) + Math.pow( (values1[0] - values2[0]), 2));
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(screenReceiver);
     }
 
     @Override

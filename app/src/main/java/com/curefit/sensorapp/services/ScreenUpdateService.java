@@ -22,6 +22,7 @@ public class ScreenUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        System.out.println("adding screen Screen update service called");
         dsh = DataStoreHelper.getInstance(this);
         System.out.println("Service started");
         boolean screenOn = intent.getBooleanExtra("screen_state", false);
@@ -43,6 +44,7 @@ public class ScreenUpdateService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {

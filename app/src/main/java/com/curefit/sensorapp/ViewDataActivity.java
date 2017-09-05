@@ -1,5 +1,6 @@
 package com.curefit.sensorapp;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -47,20 +48,22 @@ public class ViewDataActivity extends AppCompatActivity {
         final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
         sleeptimeButton.setOnClickListener(myButton_sleeptime);
         // starting service
-        Intent i = new Intent(this, SensorUpdateService.class);
-        getApplicationContext().startService(i);
+        if(isMyServiceRunning(SensorUpdateService.class)) {
+
+        }
+        else {
+            Intent i = new Intent(this, SensorUpdateService.class);
+            getApplicationContext().startService(i);
+        }
     }
 
-    final View.OnClickListener myButton_Listener1 = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            System.out.println("Button 1 pressed");
-            AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(getApplicationContext(), SensorUpdateService.class);
-            PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000, scheduledIntent);
-        }
-    };
+    private void setAlarmToStartService() {
+        AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), SensorUpdateService.class);
+        PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000, scheduledIntent);
+    }
+
     final View.OnClickListener myButton_Listener2 = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -105,6 +108,7 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
     final View.OnClickListener myButton_sleeptime = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("sleeptime button");
@@ -113,4 +117,15 @@ public class ViewDataActivity extends AppCompatActivity {
 
         }
     };
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (SensorUpdateService.class.equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

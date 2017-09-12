@@ -1,11 +1,13 @@
 package com.curefit.sensorapp;
 
+import android.util.Log;
+
 import com.curefit.sensorapp.data.User;
 import com.curefit.sensorapp.db.DataStoreHelper;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.time.Instant;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class FirebaseStoreHelper {
 
     public void sendData(PayLoad payLoad, String type) {
         // we will post the data like /NewData/< date >/ <userid> /< time in epoch >
+
 
         String email = payLoad.getUser().getEmail();
         long currentEpochTime = System.currentTimeMillis();
@@ -41,15 +44,18 @@ public class FirebaseStoreHelper {
         newRef.setValue(payLoad.data);
     }
 
-    public void sendData(HashMap<String, List> h, User user) {
-        DatabaseReference newRef = mDatabase.child("batchwiseData");
+    public void sendData(HashMap<String, List> h, User user, long currentTime) {
+        System.out.println("---- Send data called ----");
+        DatabaseReference newRef = mDatabase.child("ContractedData");
         String email = user.getEmail();// these characters are not acceptible by firebase for node names
         char characters [] = {'.', '#', '$', '[', ']'};
         for (char c: characters){
             email = email.replace(c, '-');
         }
+        newRef = newRef.child(DataStoreHelper.getDateTime().split("\\s")[0]);       // create a node with data time as current date time
         newRef = newRef.child(email);
-        newRef = newRef.child(DataStoreHelper.getDateTime());       // create a node with data time as current date time
+        newRef = newRef.child(String.valueOf(currentTime));
         newRef.setValue(h);
     }
+
 }

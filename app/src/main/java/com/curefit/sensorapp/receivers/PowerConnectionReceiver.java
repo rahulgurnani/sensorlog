@@ -30,8 +30,8 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
         if (status == BatteryManager.BATTERY_STATUS_NOT_CHARGING) {
             isCharging = false;
         }
-        Intent i = new Intent(context, BatteryUpdateService.class);        // why do we do it in separate service ?
-        i.putExtra("charging_state", isCharging);
-        context.startService(i);
+//        Intent i = new Intent(context, BatteryUpdateService.class);        // why do we do it in separate service ?
+//        i.putExtra("charging_state", isCharging);
+//        context.startService(i);
     }
 }

@@ -111,7 +111,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-
+    /*
+    getStats is used to get statistics of number of updates made etc.
+     */
     public HashMap<String, String> getStats(String sensorName) {
         String selectQuery = "SELECT * FROM " + TABLE_STATS + " WHERE SENSORNAME='" + sensorName + "'";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -171,17 +173,20 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         values.put("ACCZ", accValues[2]);
         long newRowId = db.insert(TABLE_ACC, null, values);
         // post data to firebase database
-        AccelerometerData data = new AccelerometerData(accValues);
+//        AccelerometerData data = new AccelerometerData(accValues);
 
         // check for time if there is a difference of more than 30 minutes, then send the data etc.
-        PayLoad payLoad = createPayLoadUtil(data);
+//        PayLoad payLoad = createPayLoadUtil(data);
 
-        postPayLoad(payLoad, "acc");
-        System.out.println("Stored values1");
+//        postPayLoad(payLoad, "acc");
+//        System.out.println("Stored values1");
         db.close();
         updateSensorStats("Accelerometer");
     }
 
+    /*
+    function used to add sleep time entry.
+     */
     public void addEntrySleepTime(String name, int hour, int minute) {
         HashMap<String, String> data = new HashMap<String, String>();
 //        data.put("sensorType", "User input");
@@ -272,9 +277,9 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         System.out.println("State : " + Integer.toString(state));
 
         db.insert(TABLE_SCREEN, null, values);
-        ScreenData data = new ScreenData(state);
-        PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad, "scrn");
+//        ScreenData data = new ScreenData(state);
+//        PayLoad payLoad = createPayLoadUtil(data);
+//        postPayLoad(payLoad, "scrn");
         db.close();
         updateSensorStats("Screen");
     }
@@ -312,10 +317,10 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         values.put("LIGHT", lightValue);
         db.insert(TABLE_LIGHT, null, values);
 
-        LightData  data = new LightData(lightValue);
+//        LightData  data = new LightData(lightValue);
 
-        PayLoad payLoad = createPayLoadUtil(data);
-        postPayLoad(payLoad, "light");
+//        PayLoad payLoad = createPayLoadUtil(data);
+//        postPayLoad(payLoad, "light");
 
         db.close();
         updateSensorStats("Light");

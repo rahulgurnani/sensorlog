@@ -31,9 +31,16 @@ dependencies {
     compile 'com.android.support:design:26.+'
     // firebase
     compile 'com.google.firebase:firebase-database:9.6.1'
+
+    // async android library
+    compile 'com.loopj.android:android-async-http:1.4.9'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
     testCompile 'junit:junit:4.12'
     // Realm
     compile 'io.realm:realm-android:0.82.1'
 
+    compile 'com.google.code.gson:gson:2.2.4'
 }
 apply plugin: 'com.google.gms.google-services'

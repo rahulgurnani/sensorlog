@@ -55,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
         globalVariable = GlobalVariable.getInstance();
         globalVariable.setUser(user);
         globalVariable.setContext(context);
-//        SyncUtils.CreateSyncAccount(this);
-//        SyncAdapter.performSync();
+        SyncUtils.CreateSyncAccount(this);
+        SyncAdapter.performSync();
         if (!(dataStoreHelper.getSleepData().getSu() && dataStoreHelper.getSleepData().getEu())) {
             scheduleNotification();
         }
         startActivity(new Intent(MainActivity.this, ViewDataActivity.class));
         finish();
+
     }
 
     final View.OnClickListener loginButtonListener = new View.OnClickListener() {

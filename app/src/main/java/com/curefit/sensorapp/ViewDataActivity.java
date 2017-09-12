@@ -127,5 +127,4 @@ public class ViewDataActivity extends AppCompatActivity {
         }
         return false;
     }
-
 }

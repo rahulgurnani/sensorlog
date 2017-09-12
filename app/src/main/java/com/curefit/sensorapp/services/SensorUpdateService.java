@@ -1,7 +1,10 @@
 package com.curefit.sensorapp.services;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.Sensor;
@@ -57,7 +60,7 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         BroadcastReceiver batteryReceiver = new PowerConnectionReceiver();
         filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         registerReceiver(batteryReceiver, filter);      // TODO : Check if there we have to unregister.
-
+//        restartService();
         return START_STICKY;
 
     }
@@ -85,6 +88,17 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     @Override
     public void onDestroy() {
         unregisterReceiver(screenReceiver);
+        System.out.println("-----Service Destroyed----");
+//        restartService();
+    }
+
+    public void restartService() {
+        System.out.println("------ Restart Service ------ ");
+
+        AlarmManager scheduler = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), SensorUpdateService.class);
+        PendingIntent scheduledIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        scheduler.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 20000, scheduledIntent);
     }
 
     @Override

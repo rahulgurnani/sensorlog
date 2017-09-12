@@ -8,7 +8,7 @@ import io.realm.RealmObject;
 
 public class BatteryData {
     int state;
-
+    long ts;
     // Constructors
     public BatteryData() {
 
@@ -16,6 +16,7 @@ public class BatteryData {
 
     public BatteryData(int state) {
         this.state = state;
+        this.ts = System.currentTimeMillis();
     }
 
     // getters and setters

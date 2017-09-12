@@ -16,7 +16,7 @@ import com.curefit.sensorapp.SensorData;
  */
 
 public class SyncUtils {
-    private static final long SYNC_FREQUENCY = 1 * 60;
+    private static final long SYNC_FREQUENCY = 60*30;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     public static final String ACCOUNT = "SensorApp";
     public static String ACCOUNT_TYPE = null;

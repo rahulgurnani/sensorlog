@@ -23,7 +23,7 @@ import java.util.Calendar;
 /*
 SleepTime activity to get user start and end sleep time.
  */
-public class SleepTime extends AppCompatActivity {
+public class SleepTimeActivity extends AppCompatActivity {
 
     int start_hour;
     int end_hour;

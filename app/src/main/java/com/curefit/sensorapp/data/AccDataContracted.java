@@ -1,7 +1,5 @@
 package com.curefit.sensorapp.data;
 
-import com.curefit.sensorapp.Utility;
-
 import java.util.Arrays;
 import java.util.List;
 

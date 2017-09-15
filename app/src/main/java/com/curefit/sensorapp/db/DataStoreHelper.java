@@ -8,15 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.curefit.sensorapp.GlobalVariable;
-import com.curefit.sensorapp.PayLoad;
-import com.curefit.sensorapp.SensorData;
-import com.curefit.sensorapp.data.AccelerometerData;
-import com.curefit.sensorapp.data.LightData;
-import com.curefit.sensorapp.data.ScreenData;
+import com.curefit.sensorapp.data.PayLoad;
+import com.curefit.sensorapp.data.SensorData;
 import com.curefit.sensorapp.data.SleepData;
 import com.curefit.sensorapp.data.User;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

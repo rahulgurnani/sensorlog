@@ -30,7 +30,7 @@ public class NotificationPublisher extends BroadcastReceiver {
     private Notification getNotification(String content, Context context) {
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setClass(context, SleepTime.class);
+        intent.setClass(context, SleepTimeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent sender = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 

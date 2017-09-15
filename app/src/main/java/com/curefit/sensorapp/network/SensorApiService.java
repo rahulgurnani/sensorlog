@@ -1,9 +1,6 @@
 package com.curefit.sensorapp.network;
 
-import com.curefit.sensorapp.PayLoad;
 import com.curefit.sensorapp.data.PayLoadJson;
-
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

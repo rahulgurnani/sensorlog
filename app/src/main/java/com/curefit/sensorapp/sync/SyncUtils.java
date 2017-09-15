@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.curefit.sensorapp.R;
-import com.curefit.sensorapp.SensorData;
 
 /**
  * Created by rahul on 23/08/17.

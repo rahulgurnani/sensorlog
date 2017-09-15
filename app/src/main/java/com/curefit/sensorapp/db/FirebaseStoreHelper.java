@@ -1,7 +1,6 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.db;
 
-import android.util.Log;
-
+import com.curefit.sensorapp.data.PayLoad;
 import com.curefit.sensorapp.data.User;
 import com.curefit.sensorapp.db.DataStoreHelper;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +38,7 @@ public class FirebaseStoreHelper {
         newRef = newRef.child(email);
         newRef = newRef.child(type);
         newRef = newRef.child(String.valueOf(currentEpochTime));
-        newRef.setValue(payLoad.data);
+        newRef.setValue(payLoad.getData());
     }
 
     public void sendData(HashMap<String, List> h, User user, long currentTime) {

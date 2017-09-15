@@ -1,11 +1,5 @@
 package com.curefit.sensorapp.data;
 
-import android.support.v4.math.MathUtils;
-
-import com.curefit.sensorapp.Utility;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -3,6 +3,7 @@ package com.curefit.sensorapp;
 import android.content.Context;
 
 import com.curefit.sensorapp.data.User;
+import com.curefit.sensorapp.db.FirebaseStoreHelper;
 
 /**
  * Created by rahul on 08/08/17.

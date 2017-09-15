@@ -18,13 +18,11 @@ import com.curefit.sensorapp.services.SensorUpdateService;
 This is for the screen that appears after login, where there are buttons for setting sleep time etc.
  */
 public class ViewDataActivity extends AppCompatActivity {
-    private DataStoreHelper dsh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // initializations
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_allactions);
-        dsh = DataStoreHelper.getInstance(this);
 
         GlobalVariable globalVariable = GlobalVariable.getInstance();
 
@@ -96,7 +94,7 @@ public class ViewDataActivity extends AppCompatActivity {
     final View.OnClickListener sleepTimeButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("sleeptime button");
-            Intent intent = new Intent(ViewDataActivity.this, SleepTime.class);
+            Intent intent = new Intent(ViewDataActivity.this, SleepTimeActivity.class);
             startActivity(intent);
 
         }

@@ -1,4 +1,4 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.data;
 
 import java.util.Arrays;
 import java.util.List;

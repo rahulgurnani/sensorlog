@@ -1,4 +1,4 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.data;
 
 import com.curefit.sensorapp.data.User;
 import com.curefit.sensorapp.db.DataStoreHelper;

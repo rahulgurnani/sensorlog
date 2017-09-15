@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.curefit.sensorapp.db.DataStoreHelper;
-import com.curefit.sensorapp.extras.TableViewScreen;
 import com.curefit.sensorapp.services.SensorUpdateService;
 
 /*
@@ -30,24 +29,16 @@ public class ViewDataActivity extends AppCompatActivity {
         GlobalVariable globalVariable = GlobalVariable.getInstance();
 
         // creating buttons
-//        final Button button1 = (Button) findViewById(R.id.button1);
-//        button1.setOnClickListener(myButton_Listener1);
-        final Button button2 = (Button) findViewById(R.id.button2);
-        button2.setOnClickListener(myButton_Listener2);
-        final Button button3 = (Button) findViewById(R.id.button3);
-        button3.setOnClickListener(myButton_Listener3);
-        final Button button4 = (Button) findViewById(R.id.button4);
-        button4.setOnClickListener(myButton_Listener4);
+        final Button lightButton = (Button) findViewById(R.id.light_button);
+        lightButton.setOnClickListener(lightButtonListener);
+        final Button screenButton = (Button) findViewById(R.id.screen_button);
+        screenButton.setOnClickListener(screenButtonListener);
+        final Button accButton = (Button) findViewById(R.id.acc_button);
+        accButton.setOnClickListener(accButtonListener);
         TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
         welcomeUser.setText("Welcome " + globalVariable.getUser().getName());
-//        final Button button5 = (Button) findViewById(R.id.button1);
-
-//        final Button button5 = (Button) findViewById(R.id.button5);
-//        button5.setOnClickListener(myButton_Listener5);
-//        final Button button6 = (Button) findViewById(R.id.button6);
-//        button6.setOnClickListener(myButton_Listener6);
         final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
-        sleeptimeButton.setOnClickListener(myButton_sleeptime);
+        sleeptimeButton.setOnClickListener(sleepTimeButtonListener);
         // starting service
         if(isMyServiceRunning(SensorUpdateService.class)) {
 
@@ -65,7 +56,7 @@ public class ViewDataActivity extends AppCompatActivity {
         scheduler.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000, scheduledIntent);
     }
 
-    final View.OnClickListener myButton_Listener2 = new View.OnClickListener() {
+    final View.OnClickListener lightButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             System.out.println("Button 2 pressed");
@@ -74,7 +65,7 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
-    final View.OnClickListener myButton_Listener3 = new View.OnClickListener() {
+    final View.OnClickListener screenButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 3 pressed");
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
@@ -82,7 +73,7 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
-    final View.OnClickListener myButton_Listener4 = new View.OnClickListener() {
+    final View.OnClickListener accButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 4 pressed");
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
@@ -92,7 +83,7 @@ public class ViewDataActivity extends AppCompatActivity {
         }
     };
     // charging data button
-    final View.OnClickListener myButton_Listener5 = new View.OnClickListener() {
+    final View.OnClickListener batteryButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("Button 5 pressed");
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
@@ -101,16 +92,8 @@ public class ViewDataActivity extends AppCompatActivity {
         }
     };
 
-    // table view with screen data
-    final View.OnClickListener myButton_Listener6 = new View.OnClickListener() {
-        public void onClick(View view) {
-            System.out.println("Button 6 pressed");
-            Intent intent = new Intent(ViewDataActivity.this, TableViewScreen.class);
-            startActivity(intent);
-        }
-    };
 
-    final View.OnClickListener myButton_sleeptime = new View.OnClickListener() {
+    final View.OnClickListener sleepTimeButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             System.out.println("sleeptime button");
             Intent intent = new Intent(ViewDataActivity.this, SleepTime.class);

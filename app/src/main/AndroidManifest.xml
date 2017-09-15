@@ -53,17 +53,17 @@
             android:theme="@style/AppTheme.NoActionBar" />
         
         <activity
-            android:name=".TableViewScreen"
+            android:name=".extras.TableViewScreen"
             android:label="@string/title_activity_table_view"
             android:theme="@style/AppTheme.NoActionBar" />
         
         <activity
-            android:name=".TableViewLight"
+            android:name=".extras.TableViewLight"
             android:label="@string/title_activity_table_view"
             android:theme="@style/AppTheme.NoActionBar" />
         
         <activity
-            android:name=".TableViewAcc"
+            android:name=".extras.TableViewAcc"
             android:label="@string/title_activity_table_view"
             android:theme="@style/AppTheme.NoActionBar" />
 

@@ -73,7 +73,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle bundle, String s,
                               ContentProviderClient contentProviderClient, SyncResult syncResult) {
         // Data transfer code here.
-        Log.d("SensorApp", "onPerformSync");
+        Log.d(TAG, "onPerformSync");
 
         try {
             syncSensorData(syncResult);
@@ -86,22 +86,25 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncSensorData(SyncResult syncResult) throws IOException, RemoteException, OperationApplicationException {
-        // Accelerometer
-        String projectionAcc[] = { SensorDataContract.AccReadings.TIMESTAMP, SensorDataContract.AccReadings.ACCX, SensorDataContract.AccReadings.ACCY, SensorDataContract.AccReadings.ACCZ};
+    /**
+     *
+     * @param selectionArgs : the time upto  which we will aggregate the readings of the accelerometer.
+     * @return : the aggregarted accelerometer readings
+     */
+    private List<AccDataContracted> getAggAccelerometerData(String selectionArgs[]) {
+        Log.d(TAG, "Get acc data aggregated");
+        String projectionAcc[] = { SensorDataContract.AccReadings.TIMESTAMP, SensorDataContract.AccReadings.ACCX,
+                SensorDataContract.AccReadings.ACCY, SensorDataContract.AccReadings.ACCZ};      // The columns that we need in our query.
+        long currentMinuteEnd = -1;         // Keeps the value of the second at which the currentMinute ends
 
-        long currentTime = System.currentTimeMillis();
-        currentTime = currentTime - currentTime % WINDOW;      // rounded to last minute
-        String selectionArgs[] = { String.valueOf(currentTime) };
-        long currentMinuteEnd = -1;
+        // Querying accelerometer readings and contracting them per WINDOW.
+        Cursor c = contentResolver.query(SensorDataContract.AccReadings.CONTENT_URI, projectionAcc,
+                SensorDataContract.AccReadings.TIMESTAMP + "<= ?", selectionArgs, null);    // Querying using the cursor
 
-        Cursor c = contentResolver.query(SensorDataContract.AccReadings.CONTENT_URI, projectionAcc, SensorDataContract.AccReadings.TIMESTAMP + "<= ?", selectionArgs, null);
-        List<AccelerometerData> accReadings = new ArrayList<>();
-        List<AccDataContracted> accContractedReadings = new ArrayList<>();
-        List<AccelerometerData> accReadingsWindow = new ArrayList<>();      // represents the current window
-        boolean flag_acc_absent = false;
-        boolean flag_light_absent = false;
-        boolean flag_screen_absent = false;
+        List<AccelerometerData> accReadings = new ArrayList<>();        // the original accReadings, this array can be used for debugging purposes.
+        List<AccDataContracted> accAggReadings = new ArrayList<>();     // the Aggregated accReadings, this array is the one that we send over the server.
+        List<AccelerometerData> accReadingsWindow = new ArrayList<>();      // stores readings current window
+
 
         if (c.moveToFirst()) {
             // traverse through c
@@ -113,42 +116,42 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 long timestamp = Long.parseLong(c.getString(0));
 
                 if(currentMinuteEnd == -1)
-                    currentMinuteEnd = timestamp - (timestamp % WINDOW) + WINDOW;
+                    currentMinuteEnd = timestamp - (timestamp % WINDOW) + WINDOW;       // gives the upper limit of the current minute
 
                 AccelerometerData data = new AccelerometerData(accValues, timestamp);
-                System.out.println("------ Acc contracted ------");
-                System.out.println(timestamp);
-                System.out.println(currentMinuteEnd);
                 accReadings.add(data);
+
                 if (timestamp < currentMinuteEnd) {
                     accReadingsWindow.add(data);
                 }
                 else {
-                    System.out.println("--- adding new value acc contracted ------- ");
                     if(accReadingsWindow.size() > 0)
-                        accContractedReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
+                        accAggReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
                     accReadingsWindow = new ArrayList<>();
                     currentMinuteEnd = timestamp - (timestamp % WINDOW) + WINDOW;
                 }
             } while (c.moveToNext());
         }
 
+        // The last window needs to be added explicitly
         if (accReadingsWindow.size() > 0) {
-            accContractedReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
+            accAggReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
         }
 
-        HashMap<String, List> h = new HashMap<>();
-//        h.put("acc", accReadings);
-        System.out.println("Accelerometer Contracted Readings number : "  + String.valueOf(accReadings.size()));
-        if(accContractedReadings.size() > 0)
-            h.put("acc_contracted", accContractedReadings);
-        else
-            flag_acc_absent = true;
+        return accAggReadings;
+    }
 
-        // Light
+    /**
+     *
+     * @param selectionArgs : The time until which the readings need to be queried.
+     * @return : returns the aggregated array of the readings.
+     */
+    private List<LightDataContracted> getAggLightData(String selectionArgs[]) {
         String projectionLight[] = { SensorDataContract.LightReadings.TIMESTAMP, SensorDataContract.LightReadings.LIGHT};
+        long currentMinuteEnd = -1;         // Keeps the value of the second at which the currentMinute ends
 
-        c = contentResolver.query(SensorDataContract.LightReadings.CONTENT_URI, projectionLight, SensorDataContract.LightReadings.TIMESTAMP + "<= ?", selectionArgs, null);
+        // Querying Light readings and contracting (aggregating) them over WINDOW.
+        Cursor c = contentResolver.query(SensorDataContract.LightReadings.CONTENT_URI, projectionLight, SensorDataContract.LightReadings.TIMESTAMP + "<= ?", selectionArgs, null);
         List<LightData> lightReadings = new ArrayList<>();
         List<LightDataContracted> lightContractedReadings = new ArrayList<>();
         List<LightData> lightReadingsWindow = new ArrayList<>();
@@ -167,7 +170,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                     lightReadingsWindow.add(data);
                 }
                 else {
-                    System.out.println("----adding new contracted light value --------");
                     if (lightReadingsWindow.size() > 0)
                         lightContractedReadings.add(new LightDataContracted(lightReadingsWindow, currentMinuteEnd - WINDOW));
                     lightReadingsWindow = new ArrayList<>();
@@ -177,18 +179,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }while (c.moveToNext());
         }
 
-//        h.put("light", lightReadings);
-        System.out.println("LightContractedReadings : " + String.valueOf(lightContractedReadings.size()));
         if(lightReadingsWindow.size() > 0)
-            lightContractedReadings.add(new LightDataContracted(lightReadingsWindow, currentTime));
+            lightContractedReadings.add(new LightDataContracted(lightReadingsWindow, currentMinuteEnd - WINDOW));
 
-        if (lightContractedReadings.size() > 0)
-            h.put("light_contracted", lightContractedReadings);
-        else
-            flag_light_absent = true;
-        // Screen
+        return lightContractedReadings;
+    }
+
+    private List<ScreenData> getScreenData(String selectionArgs[]) {
+        // Querying Screen readings and putting them in the hashmap
         String projectionScreen[] = { SensorDataContract.ScreenReadings.TIMESTAMP, SensorDataContract.ScreenReadings.SCREEN };
-        c = contentResolver.query(SensorDataContract.ScreenReadings.CONTENT_URI, projectionScreen, SensorDataContract.ScreenReadings.TIMESTAMP + "<= ?" , selectionArgs, null);
+        Cursor c = contentResolver.query(SensorDataContract.ScreenReadings.CONTENT_URI, projectionScreen, SensorDataContract.ScreenReadings.TIMESTAMP + "<= ?" , selectionArgs, null);
         List<ScreenData> screenReadings = new ArrayList<>();
 
         if (c.moveToFirst()) {
@@ -198,9 +198,41 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 screenReadings.add(data);
             }while (c.moveToNext());
         }
+        return screenReadings;
+    }
 
+
+    private void syncSensorData(SyncResult syncResult) throws IOException, RemoteException, OperationApplicationException {
+
+        HashMap<String, List> alldata = new HashMap<>();      // This hasmap holds all the data that needs to be sent
+        boolean flag_acc_absent = false;
+        boolean flag_light_absent = false;
+        boolean flag_screen_absent = false;
+
+
+        long currentTime = System.currentTimeMillis();
+        currentTime = currentTime - currentTime % WINDOW;      // rounded to last minute
+        String selectionArgs[] = { String.valueOf(currentTime) };
+
+        // Accelerometer
+        List<AccDataContracted> accAggReadings = getAggAccelerometerData(selectionArgs);
+
+        if(accAggReadings.size() > 0)
+            alldata.put("acc_contracted", accAggReadings);
+        else
+            flag_acc_absent = true;
+
+        // Light
+        List<LightDataContracted> lightAggReadings = getAggLightData(selectionArgs);
+        if (lightAggReadings.size() > 0)
+            alldata.put("light_contracted", lightAggReadings);
+        else
+            flag_light_absent = true;
+
+        // Screen
+        List<ScreenData> screenReadings = getScreenData(selectionArgs);
         if (screenReadings.size() > 0)
-            h.put("screen", screenReadings);
+            alldata.put("screen", screenReadings);
         else
             flag_screen_absent = true;
 
@@ -208,13 +240,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (flag_acc_absent && flag_light_absent && flag_screen_absent)
             return;
 
-        System.out.println("Length of lists : ");
-        System.out.println(screenReadings.size());
-        System.out.println(lightReadings.size());
-        System.out.println(accReadings.size());
-        // user
-        String projection2[] = {SensorDataContract.UserData.NAME, SensorDataContract.UserData.EMAIL };
-        Cursor user_c = contentResolver.query(SensorDataContract.UserData.CONTENT_URI, projection2, null, null, null);
+        // User
+        String projectionUser[] = {SensorDataContract.UserData.NAME, SensorDataContract.UserData.EMAIL };
+        Cursor user_c = contentResolver.query(SensorDataContract.UserData.CONTENT_URI, projectionUser, null, null, null);
         String username = null;
         String email= null;
         if (user_c.moveToFirst()) {
@@ -232,11 +260,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         // send it to firebase database
         FirebaseApp.initializeApp(mContext);
         FirebaseStoreHelper f = new FirebaseStoreHelper(GlobalVariable.URL);
-        f.sendData(h, user, currentTime);
+        f.sendData(alldata, user, currentTime);
+
+        // Delete the entries
         contentResolver.delete(SensorDataContract.AccReadings.CONTENT_URI, SensorDataContract.AccReadings.TIMESTAMP + " <= ?", selectionArgs);
         contentResolver.delete(SensorDataContract.LightReadings.CONTENT_URI, SensorDataContract.LightReadings.TIMESTAMP + " <= ?", selectionArgs);
         contentResolver.delete(SensorDataContract.ScreenReadings.CONTENT_URI, SensorDataContract.ScreenReadings.TIMESTAMP + " <= ?", selectionArgs);
-
 
 //        GsonBuilder builder = new GsonBuilder();
 //        Gson gson = builder.create();

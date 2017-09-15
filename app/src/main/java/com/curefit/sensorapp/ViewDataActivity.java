@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.curefit.sensorapp.db.DataStoreHelper;
+import com.curefit.sensorapp.extras.TableViewScreen;
 import com.curefit.sensorapp.services.SensorUpdateService;
 
 /*

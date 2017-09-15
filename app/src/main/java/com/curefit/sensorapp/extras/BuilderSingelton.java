@@ -1,7 +1,5 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.extras;
 
-import android.app.job.JobInfo;
-import android.content.ComponentName;
 import android.content.Context;
 
 /**

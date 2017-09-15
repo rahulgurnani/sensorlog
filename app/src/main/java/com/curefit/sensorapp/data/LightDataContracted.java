@@ -2,6 +2,8 @@ package com.curefit.sensorapp.data;
 
 import android.support.v4.math.MathUtils;
 
+import com.curefit.sensorapp.Utility;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
@@ -31,12 +33,10 @@ public class LightDataContracted {
             lastLightIntensity = alldata.get(i).getlV();
         }
         mean  = mean / n;
-        for (int i = 0 ; i < alldata.size(); i++ ) {
-            std += Math.pow(alldata.get(i).getlV() - mean, 2);
-        }
-        std = std/n;
-        Arrays.sort(intensities);
-        median = intensities[n/2];
+
+        std = Utility.computeStd(intensities, n, mean);
+        median = Utility.computeMedian(intensities, n);
+
         this.timestamp = timestamp;
     }
 

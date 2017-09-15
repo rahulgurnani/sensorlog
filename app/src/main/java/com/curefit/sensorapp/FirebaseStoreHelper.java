@@ -24,8 +24,6 @@ public class FirebaseStoreHelper {
 
     public void sendData(PayLoad payLoad, String type) {
         // we will post the data like /NewData/< date >/ <userid> /< time in epoch >
-
-
         String email = payLoad.getUser().getEmail();
         long currentEpochTime = System.currentTimeMillis();
         String currentTimestamp = DataStoreHelper.getDateTime();

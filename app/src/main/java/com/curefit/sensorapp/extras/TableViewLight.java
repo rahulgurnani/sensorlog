@@ -1,4 +1,4 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.extras;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -9,28 +9,29 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 
+import com.curefit.sensorapp.R;
+import com.curefit.sensorapp.SensorData;
 import com.curefit.sensorapp.db.DataStoreHelper;
 
 import java.util.List;
 /*
-Was using this to view readings of screen in a table view. Redundant code now.
+Was using this to view readings of light in a table view. Redundant code now.
  */
-public class TableViewScreen extends Activity {
+
+public class TableViewLight extends Activity {
     TableLayout tl;
     TableRow tr;
-    TextView state, timestamp;
+    TextView timestamp, lightIntensity;
     DataStoreHelper dsh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         dsh = DataStoreHelper.getInstance(this);
         setContentView(R.layout.activity_table_view);
         tl = (TableLayout) findViewById(R.id.maintable);
         addHeaders();
 
-        List<SensorData> list =  dsh.getAllDataScreen();
-
+        List<SensorData> list =  dsh.getAllDataLight();
         addData(list);
     }
     public void addHeaders() {
@@ -44,12 +45,15 @@ public class TableViewScreen extends Activity {
         timestamp.setPadding(5,5,5,0);
         tr.addView(timestamp);
 
-        TextView state = new TextView(this);
-        state.setText("State");
-        state.setTextColor(Color.GRAY);
-        state.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-        state.setPadding(5,5,5,0);
-        tr.addView(state);
+        TextView lightIntensity = new TextView(this);
+        lightIntensity.setText("LightIntensity");
+        lightIntensity.setTextColor(Color.GRAY);
+        lightIntensity.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        lightIntensity.setPadding(5,5,5,0);
+        tr.addView(lightIntensity);
+
+
+
         // Add the TableRow to the TableLayout
         tl.addView(tr, new TableLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT,
@@ -87,7 +91,6 @@ public class TableViewScreen extends Activity {
             tr.setLayoutParams(new LayoutParams(
                     LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-
             timestamp = new TextView(this);
             timestamp.setText(list.get(i).getTimestamp());
             timestamp.setTextColor(Color.GRAY);
@@ -95,17 +98,17 @@ public class TableViewScreen extends Activity {
             timestamp.setPadding(5,5,5,0);
             tr.addView(timestamp);
 
-            state = new TextView(this);
-            state.setText(Integer.toString(list.get(i).getScreenValue()));
-            state.setTextColor(Color.GRAY);
-            state.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-            state.setPadding(5,5,5,0);
-            tr.addView(state);
+            lightIntensity =new TextView(this);
+            lightIntensity.setText(Float.toString(list.get(i).getLightValue()));
+            lightIntensity.setTextColor(Color.GRAY);
+            lightIntensity.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            lightIntensity.setPadding(5,5,5,0);
+            tr.addView(lightIntensity);
+
             // Add the TableRow to the TableLayout
             tl.addView(tr, new TableLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-
         }
     }
 }

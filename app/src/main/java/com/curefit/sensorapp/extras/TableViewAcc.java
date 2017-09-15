@@ -1,4 +1,4 @@
-package com.curefit.sensorapp;
+package com.curefit.sensorapp.extras;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -9,6 +9,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
 
+import com.curefit.sensorapp.R;
+import com.curefit.sensorapp.SensorData;
 import com.curefit.sensorapp.db.DataStoreHelper;
 
 import java.util.List;

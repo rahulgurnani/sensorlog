@@ -2,16 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.curefit.sensorapp">
 
-    <uses-permission
-        android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,24 +11,7 @@
         android:theme="@style/AppTheme">
 
         <receiver android:name=".NotificationPublisher" android:process=":remote"></receiver>
-        
-        <receiver android:name=".receivers.PowerConnectionReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
-        
-        <receiver
-            android:name=".receivers.BootBroadcastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
 
-                <category android:name="android.intent.category.HOME" />
-            </intent-filter>
-        </receiver>
-        
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,76 +22,12 @@
         
         <activity
             android:name=".ViewDataActivity"
-            android:label="@string/title_activity_table_view"
-            android:theme="@style/AppTheme.NoActionBar" />
-        
-        <activity
-            android:name=".extras.TableViewScreen"
-            android:label="@string/title_activity_table_view"
-            android:theme="@style/AppTheme.NoActionBar" />
-        
-        <activity
-            android:name=".extras.TableViewLight"
-            android:label="@string/title_activity_table_view"
-            android:theme="@style/AppTheme.NoActionBar" />
-        
-        <activity
-            android:name=".extras.TableViewAcc"
-            android:label="@string/title_activity_table_view"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity android:name=".StatsActivity" />
 
-        <activity android:name=".SleepTime"></activity>
-        
-        <service
-            android:name=".services.SensorUpdateService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":sync" />
+        <activity android:name=".SleepTimeActivity"></activity>
 
-        <service
-            android:name=".services.ScreenUpdateService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":sync" />
-
-        <service
-            android:name=".services.BatteryUpdateService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":sync" />
-
-        <service
-            android:name=".sync.SyncService"
-            android:exported="true"
-            android:process=":sync"
-            >
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"></action>
-            </intent-filter>
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter"
-            />
-        </service>
-
-        <!-- Authenticator service -->
-        <service android:name=".sync.AuthenticatorService" >
-        <intent-filter>
-            <action android:name="android.accounts.AccountAuthenticator"/>
-        </intent-filter>
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator"/>
-        </service>
-        
-        <provider
-            android:authorities="com.curefit.sync"
-            android:name=".sync.SensorDataProvider"
-            android:exported="false"
-            android:syncable="true"
-            />
     </application>
 
 </manifest>

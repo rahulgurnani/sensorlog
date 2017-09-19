@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.curefit.sensorapp.db.DataStoreHelper;
+import com.curefit.sensorsdk.db.DataStoreHelper;
 
 import java.util.HashMap;
 /*

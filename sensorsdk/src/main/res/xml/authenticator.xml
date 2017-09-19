@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO get this icon from app, include it as resource, remove from drawables-->
+<account-authenticator
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accountType="@string/account_type"
+    android:icon="@drawable/time_icon"
+    android:smallIcon="@drawable/time_icon"
+    android:label="@string/app_name"/>

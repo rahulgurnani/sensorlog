@@ -20,8 +20,6 @@ public class NotificationPublisher extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println("Notification received");
-
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         Notification notification  = getNotification("Please share your bed time", context);
         int id = intent.getIntExtra(NOTIFICATION_ID, 0);

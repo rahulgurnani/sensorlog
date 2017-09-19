@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">sensorsdk</string>
+    <string name="account_type">curefit.sensorapp.com</string>
+    <string name="content_authority">com.curefit.sync</string>
+</resources>

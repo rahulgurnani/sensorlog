@@ -1,6 +1,3 @@
 <resources>
     <string name="app_name">SensorApp</string>
-    <string name="account_type">curefit.sensorapp.com</string>
-    <string name="content_authority">com.curefit.sync</string>
-    <string name="title_activity_table_view">TableView</string>
 </resources>

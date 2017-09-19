@@ -10,18 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.curefit.sensorapp.data.User;
-import com.curefit.sensorapp.db.DataStoreHelper;
-import com.curefit.sensorapp.sync.AccountGeneral;
-import com.curefit.sensorapp.sync.SyncAdapter;
-import com.curefit.sensorapp.sync.SyncUtils;
+import com.curefit.sensorsdk.SensorSdk;
+import com.curefit.sensorsdk.data.User;
+import com.curefit.sensorsdk.db.DataStoreHelper;
+import com.curefit.sensorsdk.sync.SyncAdapter;
+import com.curefit.sensorsdk.sync.SyncUtils;
 
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+
     DataStoreHelper dataStoreHelper;
-    GlobalVariable globalVariable;
     EditText nameText, emailText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,29 +45,27 @@ public class MainActivity extends AppCompatActivity {
                 emailText.setText(user.getEmail());
             }
         }
-
     }
 
     private void performLogin(User user) {
-        Context context = getApplicationContext();
 
-        globalVariable = GlobalVariable.getInstance();
-        globalVariable.setUser(user);
-        globalVariable.setContext(context);
-        SyncUtils.CreateSyncAccount(this);
-        SyncAdapter.performSync();
+        // starting service
+        SensorSdk.initialize(this).setDeviceId(user.getName()).setUserId(user.getEmail()).build();
+        SensorSdk.startService();
+
+
         if (!(dataStoreHelper.getSleepData().getSu() && dataStoreHelper.getSleepData().getEu())) {
             scheduleNotification();
         }
-        startActivity(new Intent(MainActivity.this, ViewDataActivity.class));
-        finish();
+        Intent intent = new Intent(MainActivity.this, ViewDataActivity.class);
+        startActivity(intent.putExtra("name", user.getName()));
 
+        finish();
     }
 
     final View.OnClickListener loginButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            System.out.println("Login pressed");
             String name = nameText.getText().toString();
             String email = emailText.getText().toString();
             if (name.isEmpty() || name == null) {
@@ -81,18 +78,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(context, "Please Enter Email", Toast.LENGTH_SHORT);
                 return;
             }
-            // schedule notification for recording the sleeping time of the user.
 
-            // adding user to database
-            dataStoreHelper.addUser(name, email);
-            // setting user globally
             performLogin(new User(name, email));
         }
     };
 
     private void scheduleNotification() {
-        System.out.println("scheduled notification");
-
         Intent intent = new Intent(this, NotificationPublisher.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
@@ -104,7 +95,5 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.SECOND, 0);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        System.out.println("Alarm set");
     }
 }

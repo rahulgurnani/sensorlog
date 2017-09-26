@@ -20,8 +20,6 @@ public class SyncUtils {
     public static final String ACCOUNT = "SensorApp";
     public static String ACCOUNT_TYPE = null;
 
-    Account mAccount;
-
     public static void CreateSyncAccount(Context context) {
         boolean newAccount = false;
         boolean setupComplete = PreferenceManager
@@ -85,5 +83,13 @@ public class SyncUtils {
                 account,      // Sync account
                 SensorDataContract.CONTENT_AUTHORITY, // Content authority
                 b); // Extras
+    }
+
+    public static void stopSync(Context context) {
+        Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
+        AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        accountManager.removeAccountExplicitly(account);
+        ContentResolver.setIsSyncable(account, SensorDataContract.CONTENT_AUTHORITY, 0);
+
     }
 }

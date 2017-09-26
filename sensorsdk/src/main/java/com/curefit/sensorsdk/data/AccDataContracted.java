@@ -1,5 +1,7 @@
 package com.curefit.sensorsdk.data;
 
+import com.google.firebase.database.PropertyName;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,19 +10,31 @@ import java.util.List;
  */
 
 public class AccDataContracted {
-    private int n = 0;      // number of readings
-    private float meanAbs = 0;
-    private float mdAbs = 0;
-    private float maxAbs = Float.NEGATIVE_INFINITY;
-    private float minAbs = Float.POSITIVE_INFINITY;
-    private float stdAbs = 0;
+    @PropertyName("n")
+    public int n = 0;      // number of readings
+    @PropertyName("a")
+    public float meanAbs = 0;
+    @PropertyName("b")
+    public float mdAbs = 0;
+    @PropertyName("c")
+    public float maxAbs = Float.NEGATIVE_INFINITY;
+    @PropertyName("d")
+    public float minAbs = Float.POSITIVE_INFINITY;
+    @PropertyName("e")
+    public float stdAbs = 0;
 
-    private float meanChg = 0;
-    private float maxChg = Float.NEGATIVE_INFINITY;
-    private float minChg = Float.POSITIVE_INFINITY;
-    private float stdChg = 0;
-    private float mdChg = 0;
-    long ts;
+    @PropertyName("f")
+    public float meanChg = 0;
+    @PropertyName("g")
+    public float mdChg = 0;
+    @PropertyName("h")
+    public float maxChg = Float.NEGATIVE_INFINITY;
+    @PropertyName("i")
+    public float minChg = Float.POSITIVE_INFINITY;
+    @PropertyName("j")
+    public float stdChg = 0;
+
+    public long ts;
 
     /**
      * Computes vectorial difference between accelerometer values
@@ -75,52 +89,52 @@ public class AccDataContracted {
         }
     }
 
-    public long getTs() {
-        return ts;
-    }
-
-    public float getStdAbs() {
-        return stdAbs;
-    }
-
-    public float getMinAbs() {
-        return minAbs;
-    }
-
-    public float getMaxAbs() {
-        return maxAbs;
-    }
-
-    public float getMaxChg() {
-        return maxChg;
-    }
-
-    public float getMdAbs() {
-        return mdAbs;
-    }
-
-    public float getMdChg() {
-        return mdChg;
-    }
-
-    public float getMeanAbs() {
-        return meanAbs;
-    }
-
-    public float getMeanChg() {
-        return meanChg;
-    }
-
-    public float getMinChg() {
-        return minChg;
-    }
-
-    public float getStdChg() {
-        return stdChg;
-    }
-
-    public int getN() {
-        return n;
-    }
+//    public long getTs() {
+//        return ts;
+//    }
+//
+//    public float getStdAbs() {
+//        return stdAbs;
+//    }
+//
+//    public float getMinAbs() {
+//        return minAbs;
+//    }
+//
+//    public float getMaxAbs() {
+//        return maxAbs;
+//    }
+//
+//    public float getMaxChg() {
+//        return maxChg;
+//    }
+//
+//    public float getMdAbs() {
+//        return mdAbs;
+//    }
+//
+//    public float getMdChg() {
+//        return mdChg;
+//    }
+//
+//    public float getMeanAbs() {
+//        return meanAbs;
+//    }
+//
+//    public float getMeanChg() {
+//        return meanChg;
+//    }
+//
+//    public float getMinChg() {
+//        return minChg;
+//    }
+//
+//    public float getStdChg() {
+//        return stdChg;
+//    }
+//
+//    public int getN() {
+//        return n;
+//    }
 }
 

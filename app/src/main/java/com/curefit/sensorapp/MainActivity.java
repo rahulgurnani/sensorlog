@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
         nameText = (EditText) findViewById(R.id.nameText);
         emailText = (EditText) findViewById(R.id.emailText);
         if(user!=null) {
+            // we have a user in the database
             if (user.getName() != null && user.getEmail()!= null) {
-                performLogin(user);
+                performLogin(user, false);
             }
             if (user.getName()!= null) {
                 nameText.setText(user.getName());
@@ -47,12 +49,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void performLogin(User user) {
-
+    private void performLogin(User user, boolean firstTime) {
+        Log.d("SensorApp", "performLogin function called");
         // starting service
         SensorSdk.initialize(this).setDeviceId(user.getName()).setUserId(user.getEmail()).build();
-        SensorSdk.startService();
-
+        SensorSdk.startService(firstTime);
 
         if (!(dataStoreHelper.getSleepData().getSu() && dataStoreHelper.getSleepData().getEu())) {
             scheduleNotification();
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ViewDataActivity.class);
         startActivity(intent.putExtra("name", user.getName()));
 
-        finish();
+        finish();       // because we don't want to go back to this activity if back is pressed.
     }
 
     final View.OnClickListener loginButtonListener = new View.OnClickListener() {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            performLogin(new User(name, email));
+            performLogin(new User(name, email), true);
         }
     };
 

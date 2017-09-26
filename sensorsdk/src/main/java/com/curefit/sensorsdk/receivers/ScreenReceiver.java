@@ -16,7 +16,6 @@ public class ScreenReceiver extends BroadcastReceiver {
     private static boolean lastState = false;       // off
     @Override
     public void onReceive(Context context, Intent intent) {
-
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             screenOff = false;
         }

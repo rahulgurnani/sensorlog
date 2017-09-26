@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.curefit.sensorsdk.SensorSdk;
 import com.curefit.sensorsdk.services.SensorUpdateService;
 
 /*
@@ -32,6 +34,8 @@ public class ViewDataActivity extends AppCompatActivity {
         final Button sleeptimeButton = (Button) findViewById(R.id.sleeptime);
         sleeptimeButton.setOnClickListener(sleepTimeButtonListener);
 
+        final Button logoutButton = (Button) findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(logoutButtonListener);
         // Set textView
         TextView welcomeUser = (TextView) findViewById(R.id.welcomeText);
         welcomeUser.setText("Welcome " + this.getIntent().getStringExtra("name"));
@@ -52,6 +56,16 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
+    final View.OnClickListener logoutButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            SensorSdk.endService();
+            Intent intent = new Intent(ViewDataActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+    };
+
     final View.OnClickListener screenButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
@@ -59,12 +73,12 @@ public class ViewDataActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
     final View.OnClickListener accButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             Intent intent = new Intent(ViewDataActivity.this, StatsActivity.class);
             intent.putExtra("SENSOR_TYPE", "Accelerometer");
             startActivity(intent);
-
         }
     };
     // charging data button
@@ -76,12 +90,10 @@ public class ViewDataActivity extends AppCompatActivity {
         }
     };
 
-
     final View.OnClickListener sleepTimeButtonListener = new View.OnClickListener() {
         public void onClick(View view) {
             Intent intent = new Intent(ViewDataActivity.this, SleepTimeActivity.class);
             startActivity(intent);
-
         }
     };
 

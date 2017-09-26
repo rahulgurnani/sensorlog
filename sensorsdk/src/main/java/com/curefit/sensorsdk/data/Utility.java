@@ -9,7 +9,11 @@ import java.util.List;
 
 public class Utility {
     public static float magnitude(List<Float> val) {
-        return (float) (Math.pow(val.get(0), 2) + Math.pow(val.get(0), 2) + Math.pow(val.get(0), 2));
+        float x = val.get(0);
+        float y = val.get(1);
+        float z = val.get(2);
+
+        return (float) (Math.sqrt(x*x + y*y + z*z));
     }
 
     public static float computeStd(float vals[], int n, float mean) {

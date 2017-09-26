@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.CancellationSignal;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.curefit.sensorsdk.db.DataStoreHelper;
 
@@ -23,6 +24,7 @@ public class SensorDataProvider extends ContentProvider {
     private static final int LIGHT = 2;
     private static final int SCREEN = 3;
     private static final int USER = 4;
+    private static final int MESSAGE = 5;
 
 
 
@@ -33,6 +35,7 @@ public class SensorDataProvider extends ContentProvider {
         uriMatcher.addURI(SensorDataContract.CONTENT_AUTHORITY, SensorDataContract.UserData.PATH_USER, USER);
         uriMatcher.addURI(SensorDataContract.CONTENT_AUTHORITY, SensorDataContract.LightReadings.PATH_LIGHT, LIGHT);
         uriMatcher.addURI(SensorDataContract.CONTENT_AUTHORITY, SensorDataContract.ScreenReadings.PATH_SCREEN, SCREEN);
+        uriMatcher.addURI(SensorDataContract.CONTENT_AUTHORITY, SensorDataContract.MessageData.PATH_MESSAGE, MESSAGE);
     }
     private SQLiteDatabase db;
 
@@ -61,6 +64,25 @@ public class SensorDataProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
+        switch (uriMatcher.match(uri)) {
+            case ACCELEROMETER:
+                db.insert(SensorDataContract.AccReadings.TABLE_NAME, null, contentValues);
+                break;
+            case LIGHT:
+                Log.d("SensorApp", "Inserted into Light");
+                db.insert(SensorDataContract.LightReadings.TABLE_NAME, null, contentValues);
+                break;
+            case SCREEN:
+                db.insert(SensorDataContract.ScreenReadings.TABLE_NAME, null, contentValues);
+                break;
+            case MESSAGE:
+                db.insert(SensorDataContract.MessageData.TABLE_NAME, null, contentValues);
+                break;
+            case USER:
+                db.insert(SensorDataContract.UserData.TABLE_NAME, null, contentValues);
+                break;
+            default: throw new IllegalArgumentException("Invalid URI!");
+        }
         return null;
     }
 
@@ -77,6 +99,12 @@ public class SensorDataProvider extends ContentProvider {
             case SCREEN:
                 rows = db.delete(SensorDataContract.ScreenReadings.TABLE_NAME, selection, selectionArgs);
                 break;
+            case MESSAGE:
+                rows = db.delete(SensorDataContract.MessageData.TABLE_NAME, selection, selectionArgs);
+                break;
+            case USER:
+                rows = db.delete(SensorDataContract.UserData.TABLE_NAME, selection, selectionArgs);
+                break;
             default: throw new IllegalArgumentException("Invalid URI!");
         }
 
@@ -92,11 +120,13 @@ public class SensorDataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+        // TODO: 22/09/17 check this
         this.db = DataStoreHelper.getInstance(getContext()).getDb();
         Cursor c;
         switch (uriMatcher.match(uri)) {
             // Query for multiple article results
             case ACCELEROMETER:
+                Log.d("SensorApp", "Accelerometer");
                 c = db.query(SensorDataContract.AccReadings.TABLE_NAME,
                         projection,
                         selection,
@@ -125,6 +155,15 @@ public class SensorDataProvider extends ContentProvider {
                 break;
             case SCREEN:
                 c = db.query(SensorDataContract.ScreenReadings.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case MESSAGE:
+                c = db.query(SensorDataContract.MessageData.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,

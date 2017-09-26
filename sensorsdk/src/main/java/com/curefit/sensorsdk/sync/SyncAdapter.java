@@ -13,6 +13,9 @@ import android.os.RemoteException;
 import android.util.Log;
 
 
+import com.curefit.sensorsdk.data.MessageData;
+import com.curefit.sensorsdk.data.SleepData;
+import com.curefit.sensorsdk.db.DataStoreHelper;
 import com.curefit.sensorsdk.db.FirebaseStoreHelper;
 
 import com.curefit.sensorsdk.data.AccDataContracted;
@@ -24,6 +27,8 @@ import com.curefit.sensorsdk.data.User;
 import com.curefit.sensorsdk.data.AccelerometerData;
 import com.curefit.sensorsdk.network.SensorClient;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,7 +180,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private List<ScreenData> getScreenData(String selectionArgs[]) {
         // Querying Screen readings and putting them in the hashmap
         String projectionScreen[] = { SensorDataContract.ScreenReadings.TIMESTAMP, SensorDataContract.ScreenReadings.SCREEN };
-        Cursor c = contentResolver.query(SensorDataContract.ScreenReadings.CONTENT_URI, projectionScreen, SensorDataContract.ScreenReadings.TIMESTAMP + "<= ?" , selectionArgs, null);
+        Cursor c = contentResolver.query(SensorDataContract.ScreenReadings.CONTENT_URI, projectionScreen,
+                SensorDataContract.ScreenReadings.TIMESTAMP + "<= ?" , selectionArgs, null);
         List<ScreenData> screenReadings = new ArrayList<>();
 
         if (c.moveToFirst()) {
@@ -188,6 +194,37 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return screenReadings;
     }
 
+    private List<MessageData> getMessageData(String selectionArgs[]) {
+        String projectionMessage[] = { SensorDataContract.MessageData.TIMESTAMP, SensorDataContract.MessageData.MESSAGE};
+        Cursor c = contentResolver.query(SensorDataContract.MessageData.CONTENT_URI, projectionMessage,
+                SensorDataContract.MessageData.TIMESTAMP + "<= ?", selectionArgs, null);
+        List<MessageData> messageReadings = new ArrayList<>();
+
+        if (c.moveToFirst()) {
+            // traverse through c
+            do {
+                MessageData data = new MessageData(c.getString(1), Long.parseLong(c.getString(0)));
+                messageReadings.add(data);
+            }while (c.moveToNext());
+        }
+        return messageReadings;
+    }
+
+    private List<SleepData> getSleepData(String selectionArgs[]) {
+        String projectionSleepData[] = { SensorDataContract.SleepData.TIMESTAMP,
+                SensorDataContract.SleepData.HOUR, SensorDataContract.SleepData.MINUTE, SensorDataContract.SleepData.TYPE };
+        Cursor c = contentResolver.query(SensorDataContract.SleepData.CONTENT_URI, projectionSleepData,
+                SensorDataContract.SleepData.TIMESTAMP + " <= ?", selectionArgs, null);
+        List<SleepData> sleepDatas = new ArrayList<>();
+
+        if (c.moveToFirst()) {
+            do {
+                // TODO Finish this
+            }while (c.moveToNext());
+        }
+        return sleepDatas;
+    }
+
     /**
      * This function takes all the sensor data accumlated till the current time and aggregates the data over the current window. Then it sends the aggregated data.
      * @param syncResult
@@ -196,11 +233,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * @throws OperationApplicationException
      */
     private void syncSensorData(SyncResult syncResult) throws IOException, RemoteException, OperationApplicationException {
+        Log.d("SensorApp", "SyncSensorData called");
         HashMap<String, List> alldata = new HashMap<>();      // This hasmap holds all the data that needs to be sent
         boolean flag_acc_absent = false;
         boolean flag_light_absent = false;
         boolean flag_screen_absent = false;
-
 
         long currentTime = System.currentTimeMillis();
         currentTime = currentTime - currentTime % WINDOW;      // rounded to last minute
@@ -232,9 +269,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         if (flag_acc_absent && flag_light_absent && flag_screen_absent)
             return;
 
+        // Messages
+        List<MessageData> messageDatas = getMessageData(selectionArgs);
+        if (messageDatas.size() > 0 )
+            alldata.put("message", messageDatas);
+        else
+            Log.d("message data", "size is 0");
+
+        // sleep time
+
+
         // User
         String projectionUser[] = {SensorDataContract.UserData.NAME, SensorDataContract.UserData.EMAIL };
         Cursor user_c = contentResolver.query(SensorDataContract.UserData.CONTENT_URI, projectionUser, null, null, null);
+
         String username = null;
         String email= null;
         if (user_c.moveToFirst()) {
@@ -250,20 +298,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             return;
         }
 
+//        GsonBuilder builder = new GsonBuilder();
+//        Gson gson = builder.create();
+//        String jsonObject = gson.toJson(alldata);
+
         User user = new User(username, email);
         // send it to firebase database
         FirebaseApp.initializeApp(mContext);
         FirebaseStoreHelper f = FirebaseStoreHelper.getInstance();
-        f.sendData(alldata, user, currentTime);
+        f.sendData(alldata, user.getEmail(), currentTime);
 
         // Delete the entries
         contentResolver.delete(SensorDataContract.AccReadings.CONTENT_URI, SensorDataContract.AccReadings.TIMESTAMP + " <= ?", selectionArgs);
         contentResolver.delete(SensorDataContract.LightReadings.CONTENT_URI, SensorDataContract.LightReadings.TIMESTAMP + " <= ?", selectionArgs);
         contentResolver.delete(SensorDataContract.ScreenReadings.CONTENT_URI, SensorDataContract.ScreenReadings.TIMESTAMP + " <= ?", selectionArgs);
+        contentResolver.delete(SensorDataContract.MessageData.CONTENT_URI, SensorDataContract.MessageData.TIMESTAMP + " <= ?", selectionArgs);
         // TODO update the way of update to posting the data
-//        GsonBuilder builder = new GsonBuilder();
-//        Gson gson = builder.create();
-//        String jsonObject = gson.toJson(h);
 
         // code to post the data
 //        PayLoadJson alldata = new PayLoadJson(email, DataStoreHelper.getDateTime().split("\\s")[0], h);
@@ -271,21 +321,20 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 //        Handler mainHandler = new Handler(Looper.getMainLooper());
 //        Runnable myRunnable = new MyRunnable(alldata, currentTime);
 //        mainHandler.post(myRunnable);
-
     }
 
-    class MyRunnable implements Runnable {
-        PayLoadJson alldata;
-        long currentTime;
-        public MyRunnable(PayLoadJson alldata, long currentTime) {
-            this.alldata = alldata;
-            this.currentTime = currentTime;
-        }
-        @Override
-        public void run() {
-            postDataToServer(alldata);
-        }
-    }
+//    class MyRunnable implements Runnable {
+//        PayLoadJson alldata;
+//        long currentTime;
+//        public MyRunnable(PayLoadJson alldata, long currentTime) {
+//            this.alldata = alldata;
+//            this.currentTime = currentTime;
+//        }
+//        @Override
+//        public void run() {
+//            postDataToServer(alldata);
+//        }
+//    }
 
     /**
      * Manual force Android to perform a sync with our SyncAdapter.

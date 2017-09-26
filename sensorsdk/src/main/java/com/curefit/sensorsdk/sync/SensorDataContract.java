@@ -6,6 +6,8 @@ import android.net.Uri;
  * Created by rahul on 24/08/17.
  */
 
+// followed https://github.com/codepath/android_guides/wiki/Server-Synchronization-(SyncAdapter) tutorial.
+
 public class SensorDataContract {
     public static final String CONTENT_AUTHORITY = "com.curefit.sync";
 
@@ -68,4 +70,30 @@ public class SensorDataContract {
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SCREEN).build();
     }
+    /*
+        Message Data
+     */
+    public static abstract class MessageData {
+        public static final String TABLE_NAME = "MessageData";
+        public static final String TIMESTAMP = "CURTIME";
+        public static final String MESSAGE = "MESSAGE";
+        public static final String PATH_MESSAGE = "message_table";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_MESSAGE).build();
+    }
+
+    /*
+        Sleep Data
+     */
+    public static abstract class SleepData {
+        public static final String TABLE_NAME = "SleepData";
+        public static final String TIMESTAMP = "CURTIME";
+        public static final String HOUR = "HOUR";
+        public static final String MINUTE = "MINUTE";
+        public static final String TYPE = "TYPE";
+        public static final String PATH_SLEEP= "sleep_data";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_SLEEP).build();
+    }
+
 }

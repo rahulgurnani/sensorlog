@@ -16,20 +16,14 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <receiver android:name="com.curefit.sensorsdk.receivers.PowerConnectionReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-        </receiver>
 
         <receiver
             android:name="com.curefit.sensorsdk.receivers.BootBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
-                <category android:name="android.intent.category.HOME" />
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
             </intent-filter>
         </receiver>
 
@@ -43,13 +37,6 @@
             android:enabled="true"
             android:exported="true"
             android:process=":sync" />
-
-        <service
-            android:name="com.curefit.sensorsdk.services.BatteryUpdateService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":sync" />
-
         <service
             android:name="com.curefit.sensorsdk.sync.SyncService"
             android:exported="true"

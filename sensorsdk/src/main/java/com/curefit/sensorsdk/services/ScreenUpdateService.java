@@ -1,11 +1,14 @@
 package com.curefit.sensorsdk.services;
 
 import android.app.Service;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.curefit.sensorsdk.db.DataStoreHelper;
+import com.curefit.sensorsdk.sync.SensorDataContract;
 
 /**
  * Created by rahul on 31/07/17.
@@ -24,14 +27,20 @@ public class ScreenUpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         dsh = DataStoreHelper.getInstance(this);
         boolean screenOn = intent.getBooleanExtra("screen_state", false);
+        ContentValues values = new ContentValues();
+        values.put("CURTIME", System.currentTimeMillis());
         if (!screenOn) {
             // write code to store the data to database
-            dsh.addEntryScreen(0);
+//            dsh.addEntryScreen(0);
+            values.put("STATE", 0);
+
         }
         else {
             // write code to store the data to database
-            dsh.addEntryScreen(1);
+//            dsh.addEntryScreen(1);
+            values.put("STATE", 1);
         }
+        getContentResolver().insert(SensorDataContract.ScreenReadings.CONTENT_URI, values);
         return START_NOT_STICKY;
     }
 

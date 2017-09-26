@@ -14,6 +14,7 @@ import android.widget.TimePicker;
 
 import android.text.format.DateFormat;
 
+import com.curefit.sensorsdk.SensorSdk;
 import com.curefit.sensorsdk.data.SleepData;
 import com.curefit.sensorsdk.db.DataStoreHelper;
 
@@ -86,7 +87,6 @@ public class SleepTimeActivity extends AppCompatActivity {
             final Calendar c = Calendar.getInstance();
             int hour = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
-            DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
 
             if (this.getArguments().getString("name").equals("start")) {
                 hour = getArguments().getInt("start_hour");
@@ -104,8 +104,7 @@ public class SleepTimeActivity extends AppCompatActivity {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            DataStoreHelper dsh = DataStoreHelper.getInstance(getActivity());
-            dsh.addEntrySleepTime(this.getArguments().getString("name"), hourOfDay, minute);
+            SensorSdk.sendSleepData(this.getArguments().getString("name"), hourOfDay, minute);
         }
     }
 }

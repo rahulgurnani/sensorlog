@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,8 +15,10 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.curefit.sensorsdk.SensorSdk;
 import com.curefit.sensorsdk.db.DataStoreHelper;
 import com.curefit.sensorsdk.receivers.ScreenReceiver;
+import com.curefit.sensorsdk.sync.SensorDataContract;
 import com.google.firebase.FirebaseApp;
 
 import static java.lang.Math.abs;
@@ -32,7 +35,6 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     public SensorUpdateService() {
 
     }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -97,7 +99,16 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             if (vectorialDistance(sensorEvent.values, lastValues) > 2) {
                 // send only after there is significant change
-                dsh.addEntryAcc(sensorEvent.values);
+//                dsh.addEntryAcc(sensorEvent.values);
+                ContentValues values = new ContentValues();
+                long currentEpochTime = System.currentTimeMillis();
+
+                values.put("CURTIME", currentEpochTime);
+                values.put("ACCX", sensorEvent.values[0]);
+                values.put("ACCY", sensorEvent.values[1]);
+                values.put("ACCZ", sensorEvent.values[2]);
+                getContentResolver().insert(SensorDataContract.AccReadings.CONTENT_URI, values);
+
                 lastValues[0] = sensorEvent.values[0];
                 lastValues[1]= sensorEvent.values[1];
                 lastValues[2]= sensorEvent.values[2];
@@ -106,7 +117,13 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         else if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
             if (abs(lastLightValue - sensorEvent.values[0]) > 3) {
                 // send only if there is significant change
-                dsh.addEntryLight(sensorEvent.values[0]);
+//                dsh.addEntryLight(sensorEvent.values[0]);
+                long currentEpochTime = System.currentTimeMillis();
+
+                ContentValues values = new ContentValues();
+                values.put("CURTIME", currentEpochTime);
+                values.put("LIGHT", sensorEvent.values[0]);
+                getContentResolver().insert(SensorDataContract.LightReadings.CONTENT_URI, values);
                 lastLightValue = sensorEvent.values[0];
             }
         }

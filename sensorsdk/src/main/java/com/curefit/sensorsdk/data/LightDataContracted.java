@@ -1,5 +1,8 @@
 package com.curefit.sensorsdk.data;
 
+
+import com.google.firebase.database.PropertyName;
+
 import java.util.List;
 
 /**
@@ -7,14 +10,20 @@ import java.util.List;
  */
 
 public class LightDataContracted {
-    private int n = 0;
-    private float mean = 0;
-    private float median = 0;
-    private float max = Float.NEGATIVE_INFINITY;
-    private float min = Float.POSITIVE_INFINITY;
-    private float std = 0;
-    private long ts;
-    private float lLI = 0;
+    public int n = 0;
+    @PropertyName("a")
+    public float mean = 0;
+    @PropertyName("b")
+    public float median = 0;
+    @PropertyName("c")
+    public float max = Float.NEGATIVE_INFINITY;
+    @PropertyName("d")
+    public float min = Float.POSITIVE_INFINITY;
+    @PropertyName("e")
+    public float std = 0;
+    public long ts;
+    @PropertyName("f")
+    public float lLI = 0;
 
     public LightDataContracted(List<LightData> alldata, long timestamp) {
         n = alldata.size();
@@ -34,35 +43,35 @@ public class LightDataContracted {
         this.ts = timestamp;
     }
 
-    public int getN() {
-        return n;
-    }
-
-    public float getStd() {
-        return std;
-    }
-
-    public float getMin() {
-        return min;
-    }
-
-    public float getMax() {
-        return max;
-    }
-
-    public float getMean() {
-        return mean;
-    }
-
-    public float getMedian() {
-        return median;
-    }
-
-    public long getTs() {
-        return ts;
-    }
-
-    public float getlLI() {
-        return lLI;
-    }
+//    public int getN() {
+//        return n;
+//    }
+//
+//    public float getStd() {
+//        return std;
+//    }
+//
+//    public float getMin() {
+//        return min;
+//    }
+//
+//    public float getMax() {
+//        return max;
+//    }
+//
+//    public float getMean() {
+//        return mean;
+//    }
+//
+//    public float getMedian() {
+//        return median;
+//    }
+//
+//    public long getTs() {
+//        return ts;
+//    }
+//
+//    public float getlLI() {
+//        return lLI;
+//    }
 }

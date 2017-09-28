@@ -1,5 +1,6 @@
 package com.curefit.sensorsdk.db;
 
+import com.curefit.sensorsdk.Utility;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -34,10 +35,22 @@ public class FirebaseStoreHelper {
         for (char c: characters){
             email = email.replace(c, '-');
         }
-        newRef = newRef.child(DataStoreHelper.getDateTime().split("\\s")[0]);       // create a node with data time as current date time
+        newRef = newRef.child(Utility.getDateTime().split("\\s")[0]);       // create a node with data time as current date time
         newRef = newRef.child(email);
         newRef = newRef.child(String.valueOf(currentTime));
         newRef.setValue(h);
     }
 
+    public void sendMessage(HashMap<String, String> h, String email) {
+        System.out.println("---- Send message called ----");
+        DatabaseReference newRef = mDatabase.child("NewContractedData");
+        char characters [] = {'.', '#', '$', '[', ']'};
+        for (char c: characters){
+            email = email.replace(c, '-');
+        }
+        newRef = newRef.child(Utility.getDateTime().split("\\s")[0]);       // create a node with data time as current date time
+        newRef = newRef.child(email);
+        newRef = newRef.child(String.valueOf(System.currentTimeMillis()));
+        newRef.setValue(h);
+    }
 }

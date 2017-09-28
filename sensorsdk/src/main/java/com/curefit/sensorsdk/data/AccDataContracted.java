@@ -1,5 +1,6 @@
 package com.curefit.sensorsdk.data;
 
+import com.curefit.sensorsdk.Utility;
 import com.google.firebase.database.PropertyName;
 
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.List;
  */
 
 public class AccDataContracted {
+    // we will serialize the names into small strings and so that the amount of data tranfered is less
     @PropertyName("n")
     public int n = 0;      // number of readings
     @PropertyName("a")

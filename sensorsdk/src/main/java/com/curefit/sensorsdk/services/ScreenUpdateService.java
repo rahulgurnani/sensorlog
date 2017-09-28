@@ -30,14 +30,12 @@ public class ScreenUpdateService extends Service {
         ContentValues values = new ContentValues();
         values.put("CURTIME", System.currentTimeMillis());
         if (!screenOn) {
-            // write code to store the data to database
-//            dsh.addEntryScreen(0);
+            // screen off
             values.put("STATE", 0);
 
         }
         else {
-            // write code to store the data to database
-//            dsh.addEntryScreen(1);
+            // screen on
             values.put("STATE", 1);
         }
         getContentResolver().insert(SensorDataContract.ScreenReadings.CONTENT_URI, values);

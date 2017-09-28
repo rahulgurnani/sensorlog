@@ -17,6 +17,7 @@ public class AccelerometerData {
     public AccelerometerData() {
 
     }
+
     public AccelerometerData(float accValues[], long timestamp) {
         this.aV = new ArrayList<Float>();
         this.aV.add(accValues[0]);
@@ -26,7 +27,6 @@ public class AccelerometerData {
     }
 
     // getters and setters
-
     public List<Float> getaV() {
         return aV;
     }

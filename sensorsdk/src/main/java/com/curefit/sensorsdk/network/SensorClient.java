@@ -15,7 +15,7 @@ public class SensorClient {
     private static Retrofit getClient(Context context) {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("https://us-central1-sensorapp-4fb6f.cloudfunctions.net")
+                    .baseUrl("https://us-central1-sensorapp-4fb6f.cloudfunctions.net")      // TODO: move this out
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
@@ -28,7 +28,4 @@ public class SensorClient {
         }
         return sensorApiService;
     }
-
-
-
 }

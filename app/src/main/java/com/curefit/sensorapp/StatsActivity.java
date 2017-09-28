@@ -22,8 +22,8 @@ public class StatsActivity extends AppCompatActivity {
         sensorNameTextView.setText(sensorName + " Data");
         TextView valueUpdates = (TextView) findViewById(R.id.value1);
         TextView valueTimestamp= (TextView) findViewById(R.id.value2);
-        DataStoreHelper dsh = DataStoreHelper.getInstance(this);
-        HashMap<String, String> stats = dsh.getStats(sensorName);       // pending < continue >
+        DataQueryHelper dataQueryHelper = DataQueryHelper.getInstance(this);
+        HashMap<String, String> stats = dataQueryHelper.getStats(sensorName);       // pending < continue >
         valueUpdates.setText(stats.get("NumUpdates"));
         valueTimestamp.setText(stats.get("LastTimeStamp"));
     }

@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
-    DataStoreHelper dataStoreHelper;
+    DataQueryHelper dataQueryHelper;
     EditText nameText, emailText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +31,8 @@ public class MainActivity extends AppCompatActivity {
         final Button loginButton = (Button) findViewById(R.id.login);
         loginButton.setOnClickListener(loginButtonListener);
 
-        dataStoreHelper = DataStoreHelper.getInstance(this);
-        User user = dataStoreHelper.getUser();
+        dataQueryHelper = DataQueryHelper.getInstance(this);
+        User user = dataQueryHelper.getUser();
         nameText = (EditText) findViewById(R.id.nameText);
         emailText = (EditText) findViewById(R.id.emailText);
         if(user!=null) {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         SensorSdk.initialize(this).setDeviceId(user.getName()).setUserId(user.getEmail()).build();
         SensorSdk.startService(firstTime);
 
-        if (!(dataStoreHelper.getSleepData().getSu() && dataStoreHelper.getSleepData().getEu())) {
+        if (!(dataQueryHelper.getSleepData().getSu() && dataQueryHelper.getSleepData().getEu())) {
             scheduleNotification();
         }
         Intent intent = new Intent(MainActivity.this, ViewDataActivity.class);

@@ -99,10 +99,10 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             if (vectorialDistance(sensorEvent.values, lastValues) > 2) {
                 // send only after there is significant change
-//                dsh.addEntryAcc(sensorEvent.values);
-                ContentValues values = new ContentValues();
+
                 long currentEpochTime = System.currentTimeMillis();
 
+                ContentValues values = new ContentValues();
                 values.put("CURTIME", currentEpochTime);
                 values.put("ACCX", sensorEvent.values[0]);
                 values.put("ACCY", sensorEvent.values[1]);
@@ -117,13 +117,13 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         else if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
             if (abs(lastLightValue - sensorEvent.values[0]) > 3) {
                 // send only if there is significant change
-//                dsh.addEntryLight(sensorEvent.values[0]);
                 long currentEpochTime = System.currentTimeMillis();
 
                 ContentValues values = new ContentValues();
                 values.put("CURTIME", currentEpochTime);
                 values.put("LIGHT", sensorEvent.values[0]);
                 getContentResolver().insert(SensorDataContract.LightReadings.CONTENT_URI, values);
+
                 lastLightValue = sensorEvent.values[0];
             }
         }

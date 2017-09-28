@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
  */
 
 public class SyncService extends Service {
-    private static final String TAG = "SyncService";
     // Storage for an instance of the sync adapter
     private static SyncAdapter sSyncAdapter = null;
     // Object to use as a thread-safe lock

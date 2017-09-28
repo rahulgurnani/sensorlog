@@ -26,8 +26,6 @@ public class SensorDataProvider extends ContentProvider {
     private static final int USER = 4;
     private static final int MESSAGE = 5;
 
-
-
     static {
         // this block is used for setting the value of static variable uriMatcher.
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -120,8 +118,6 @@ public class SensorDataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        // TODO: 22/09/17 check this
-        this.db = DataStoreHelper.getInstance(getContext()).getDb();
         Cursor c;
         switch (uriMatcher.match(uri)) {
             // Query for multiple article results

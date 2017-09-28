@@ -17,7 +17,7 @@ import com.curefit.sensorsdk.R;
 public class SyncUtils {
     private static final long SYNC_FREQUENCY = 60*30;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
-    public static final String ACCOUNT = "SensorApp";
+    public static final String ACCOUNT = "SensorApp";       // TODO ask what should be the name
     public static String ACCOUNT_TYPE = null;
 
     public static void CreateSyncAccount(Context context) {
@@ -85,11 +85,14 @@ public class SyncUtils {
                 b); // Extras
     }
 
+    /**
+     * this function is used to stop syncing process.
+     * @param context
+     */
     public static void stopSync(Context context) {
         Account account = new Account(ACCOUNT, ACCOUNT_TYPE);
         AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
         accountManager.removeAccountExplicitly(account);
         ContentResolver.setIsSyncable(account, SensorDataContract.CONTENT_AUTHORITY, 0);
-
     }
 }

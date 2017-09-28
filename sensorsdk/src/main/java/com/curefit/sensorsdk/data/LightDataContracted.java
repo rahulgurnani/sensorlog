@@ -1,6 +1,7 @@
 package com.curefit.sensorsdk.data;
 
 
+import com.curefit.sensorsdk.Utility;
 import com.google.firebase.database.PropertyName;
 
 import java.util.List;

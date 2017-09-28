@@ -13,6 +13,7 @@ public class LightData {
     public LightData() {
 
     }
+
     public LightData(float lightValue, long timestamp) {
         this.lV = lightValue;
         this.ts = timestamp;

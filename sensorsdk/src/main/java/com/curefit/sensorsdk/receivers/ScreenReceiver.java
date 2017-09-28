@@ -22,9 +22,7 @@ public class ScreenReceiver extends BroadcastReceiver {
         else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             screenOff = true;
         }
-        else if (intent.getAction().equals("com.curefit.sensorApp.ServiceStopped")) {
-            System.out.println("Service was stopped");
-        }
+
         boolean flag = true;
         if(( (System.currentTimeMillis() - lastUpdate ) < 300) && (lastState  == screenOff) ){
             flag = false;

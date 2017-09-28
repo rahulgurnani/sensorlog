@@ -64,6 +64,7 @@ public class SleepData {
     public void setSu(boolean su) {
         this.su = su;
     }
+
     public boolean getSu() {
         return this.eu;
     }

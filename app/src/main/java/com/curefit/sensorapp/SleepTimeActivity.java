@@ -42,7 +42,7 @@ public class SleepTimeActivity extends AppCompatActivity {
     }
 
     private void timeViewUpdate() {
-        SleepData sleepData = DataStoreHelper.getInstance(this).getSleepData();
+        SleepData sleepData = DataQueryHelper.getInstance(this).getSleepData();
         start_hour = sleepData.getHs();
         start_minute = sleepData.getMs();
         end_hour = sleepData.getHe();
@@ -104,7 +104,8 @@ public class SleepTimeActivity extends AppCompatActivity {
 
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             // Do something with the time chosen by the user
-            SensorSdk.sendSleepData(this.getArguments().getString("name"), hourOfDay, minute);
+            DataQueryHelper.getInstance(getActivity()).addEntrySleepTime(this.getArguments().getString("name"), hourOfDay, minute);
+
         }
     }
 }

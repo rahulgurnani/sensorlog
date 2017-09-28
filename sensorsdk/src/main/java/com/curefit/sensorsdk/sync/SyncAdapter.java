@@ -194,6 +194,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return screenReadings;
     }
 
+    /**
+     * Get messages which are essentially login(service start), logout(service stop).
+     * @param selectionArgs
+     * @return
+     */
     private List<MessageData> getMessageData(String selectionArgs[]) {
         String projectionMessage[] = { SensorDataContract.MessageData.TIMESTAMP, SensorDataContract.MessageData.MESSAGE};
         Cursor c = contentResolver.query(SensorDataContract.MessageData.CONTENT_URI, projectionMessage,
@@ -208,21 +213,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             }while (c.moveToNext());
         }
         return messageReadings;
-    }
-
-    private List<SleepData> getSleepData(String selectionArgs[]) {
-        String projectionSleepData[] = { SensorDataContract.SleepData.TIMESTAMP,
-                SensorDataContract.SleepData.HOUR, SensorDataContract.SleepData.MINUTE, SensorDataContract.SleepData.TYPE };
-        Cursor c = contentResolver.query(SensorDataContract.SleepData.CONTENT_URI, projectionSleepData,
-                SensorDataContract.SleepData.TIMESTAMP + " <= ?", selectionArgs, null);
-        List<SleepData> sleepDatas = new ArrayList<>();
-
-        if (c.moveToFirst()) {
-            do {
-                // TODO Finish this
-            }while (c.moveToNext());
-        }
-        return sleepDatas;
     }
 
     /**

@@ -1,39 +1,49 @@
 package com.curefit.sensorsdk.receivers;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-
-import com.curefit.sensorsdk.services.ScreenUpdateService;
+import com.curefit.sensorsdk.sync.SensorDataContract;
 
 /**
  * Created by rahul on 31/07/17.
  */
 
 public class ScreenReceiver extends BroadcastReceiver {
-    public static boolean screenOff = true;
+    public static boolean screenState = true;
     private static long lastUpdate = 1;
     private static boolean lastState = false;       // off
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-            screenOff = false;
+            screenState = false;
         }
         else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-            screenOff = true;
+            screenState = true;
         }
 
         boolean flag = true;
-        if(( (System.currentTimeMillis() - lastUpdate ) < 300) && (lastState  == screenOff) ){
+        if(( (System.currentTimeMillis() - lastUpdate ) < 300) && (lastState  == screenState) ){
             flag = false;
         }
 
         lastUpdate = System.currentTimeMillis();
-        lastState = screenOff;
+        lastState = screenState;
+
         if (flag) {
-            Intent i = new Intent(context, ScreenUpdateService.class);        // why do we do it in separate service ?
-            i.putExtra("screen_state", screenOff);
-            context.startService(i);
+            ContentValues values = new ContentValues();
+            values.put("CURTIME", System.currentTimeMillis());
+            if (screenState) {
+                // screen off
+                values.put("STATE", 1);
+
+            }
+            else {
+                // screen on
+                values.put("STATE", 0);
+            }
+            context.getContentResolver().insert(SensorDataContract.ScreenReadings.CONTENT_URI, values);
         }
     }
 }

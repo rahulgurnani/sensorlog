@@ -1,24 +1,8 @@
 package com.curefit.sensorsdk.db;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.curefit.sensorsdk.SensorSdk;
-import com.curefit.sensorsdk.data.SleepData;
-import com.curefit.sensorsdk.data.User;
-import com.curefit.sensorsdk.sync.SyncAdapter;
-import com.curefit.sensorsdk.sync.SyncUtils;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by rahul on 28/07/17.
@@ -49,12 +33,10 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, MESSAGE TEXT)";
 
 
-
-
     // Singelton class's object
     private static DataStoreHelper dsh = null;
 
-    private static SQLiteDatabase db = null;
+    static private SQLiteDatabase db = null;
     // Constructor
     private DataStoreHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -72,7 +54,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getDb() {
-        return this.getWritableDatabase();
+        return db;
     }
 
     // Singelton
@@ -91,7 +73,8 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
     // whenever you update db number, this function is called
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 2) {
+        // TODO oldVersion to newVersion
+        if (newVersion == 2) {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACC);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIGHT);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCREEN);

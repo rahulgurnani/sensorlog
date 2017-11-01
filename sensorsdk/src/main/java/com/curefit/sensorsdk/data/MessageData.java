@@ -8,10 +8,11 @@ import com.google.firebase.database.PropertyName;
 
 public class MessageData {
     @PropertyName("m")
-    public String msg;
-    public long ts;
+    public String message;
+    @PropertyName("ts")
+    public long timestamp;
     public MessageData(String message, long timestamp) {
-        msg = message;
-        ts = timestamp;
+        this.message = message;
+        this.timestamp = timestamp;
     }
 }

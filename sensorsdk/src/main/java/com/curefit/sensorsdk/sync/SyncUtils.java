@@ -17,9 +17,9 @@ import com.curefit.sensorsdk.R;
 public class SyncUtils {
     private static final long SYNC_FREQUENCY = 60*30;
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
-    public static final String ACCOUNT = "SensorApp";       // TODO ask what should be the name
+    public static final String ACCOUNT = "SensorApp";       // TODO update this name accordingly
     public static String ACCOUNT_TYPE = null;
-
+    
     public static void CreateSyncAccount(Context context) {
         boolean newAccount = false;
         boolean setupComplete = PreferenceManager
@@ -49,7 +49,6 @@ public class SyncUtils {
              * or handle it internally.
              */
             Log.d("SensorApp", "Sync Account Error");
-
         }
         // Schedule an initial sync if we detect problems with either our account or our local
         // data has been deleted. (Note that it's possible to clear app data WITHOUT affecting

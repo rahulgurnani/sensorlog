@@ -10,8 +10,8 @@ import java.util.List;
 
 public class AccelerometerData {
 
-    List<Float> aV;
-    long ts;
+    List<Float> accelerometerValue;
+    long timestamp;
 
     // Contructors
     public AccelerometerData() {
@@ -19,19 +19,19 @@ public class AccelerometerData {
     }
 
     public AccelerometerData(float accValues[], long timestamp) {
-        this.aV = new ArrayList<Float>();
-        this.aV.add(accValues[0]);
-        this.aV.add(accValues[1]);
-        this.aV.add(accValues[2]);
-        ts = timestamp;
+        this.accelerometerValue = new ArrayList<Float>();
+        this.accelerometerValue.add(accValues[0]);
+        this.accelerometerValue.add(accValues[1]);
+        this.accelerometerValue.add(accValues[2]);
+        this.timestamp = timestamp;
     }
 
     // getters and setters
-    public List<Float> getaV() {
-        return aV;
+    public List<Float> getAccelerometerValue() {
+        return accelerometerValue;
     }
 
-    public void setaV(List<Float> accValues) {
-        this.aV = accValues;
+    public void setAccelerometerValue(List<Float> accValues) {
+        this.accelerometerValue = accValues;
     }
 }

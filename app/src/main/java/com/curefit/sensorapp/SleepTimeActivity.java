@@ -14,10 +14,6 @@ import android.widget.TimePicker;
 
 import android.text.format.DateFormat;
 
-import com.curefit.sensorsdk.SensorSdk;
-import com.curefit.sensorsdk.data.SleepData;
-import com.curefit.sensorsdk.db.DataStoreHelper;
-
 import java.util.Calendar;
 
 /*

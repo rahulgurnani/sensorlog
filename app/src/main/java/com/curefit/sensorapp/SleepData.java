@@ -1,4 +1,4 @@
-package com.curefit.sensorsdk.data;
+package com.curefit.sensorapp;
 
 /**
  * Created by rahul on 30/08/17.

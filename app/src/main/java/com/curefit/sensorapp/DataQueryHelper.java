@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.curefit.sensorsdk.data.SleepData;
 import com.curefit.sensorsdk.data.User;
-import com.curefit.sensorsdk.db.DataStoreHelper;
 import com.curefit.sensorsdk.db.FirebaseStoreHelper;
 
 import java.text.SimpleDateFormat;

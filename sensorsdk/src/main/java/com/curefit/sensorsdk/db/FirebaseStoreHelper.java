@@ -1,5 +1,7 @@
 package com.curefit.sensorsdk.db;
 
+import android.util.Log;
+
 import com.curefit.sensorsdk.Utility;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,22 +16,23 @@ import java.util.List;
 
 public class FirebaseStoreHelper {
     private DatabaseReference mDatabase;
-    private static final String URL = "https://sensorapp-4fb6f.firebaseio.com";     // Firebase storage URL
+    private static final String URL = "https://sampleapp1-20c23.firebaseio.com/";     // Firebase storage URL
     private static FirebaseStoreHelper firebaseStoreHelper = null;
+
     public static FirebaseStoreHelper getInstance() {
         if (firebaseStoreHelper != null) {
             return firebaseStoreHelper;
         }
         firebaseStoreHelper = new FirebaseStoreHelper(URL);
         return firebaseStoreHelper;
-
     }
+
     public FirebaseStoreHelper(String url) {
         mDatabase = FirebaseDatabase.getInstance().getReferenceFromUrl(url);
     }
 
     public void sendData(HashMap<String, List> h, String email, long currentTime) {
-        System.out.println("---- Send data called ----");
+        Log.d("SensorApp", "---- Send data called ----");
         DatabaseReference newRef = mDatabase.child("NewContractedData");
         char characters [] = {'.', '#', '$', '[', ']'};
         for (char c: characters){
@@ -41,8 +44,9 @@ public class FirebaseStoreHelper {
         newRef.setValue(h);
     }
 
+
     public void sendMessage(HashMap<String, String> h, String email) {
-        System.out.println("---- Send message called ----");
+        Log.d("SensorApp", "---- Send message called ----");
         DatabaseReference newRef = mDatabase.child("NewContractedData");
         char characters [] = {'.', '#', '$', '[', ']'};
         for (char c: characters){

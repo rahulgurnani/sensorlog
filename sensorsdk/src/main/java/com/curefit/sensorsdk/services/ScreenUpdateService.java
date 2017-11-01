@@ -16,7 +16,6 @@ import com.curefit.sensorsdk.sync.SensorDataContract;
 
 public class ScreenUpdateService extends Service {
 
-    private DataStoreHelper dsh;
     @Override
     public void onCreate() {
 
@@ -25,14 +24,12 @@ public class ScreenUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        dsh = DataStoreHelper.getInstance(this);
         boolean screenOn = intent.getBooleanExtra("screen_state", false);
         ContentValues values = new ContentValues();
         values.put("CURTIME", System.currentTimeMillis());
         if (!screenOn) {
             // screen off
             values.put("STATE", 0);
-
         }
         else {
             // screen on
@@ -47,7 +44,6 @@ public class ScreenUpdateService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {

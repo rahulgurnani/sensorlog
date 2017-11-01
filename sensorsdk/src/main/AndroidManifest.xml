@@ -33,11 +33,6 @@
             android:exported="true"
             android:process=":sync" />
         <service
-            android:name="com.curefit.sensorsdk.services.ScreenUpdateService"
-            android:enabled="true"
-            android:exported="true"
-            android:process=":sync" />
-        <service
             android:name="com.curefit.sensorsdk.sync.SyncService"
             android:exported="true"
             android:process=":sync"

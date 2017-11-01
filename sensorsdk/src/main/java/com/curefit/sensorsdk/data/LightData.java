@@ -7,29 +7,29 @@ package com.curefit.sensorsdk.data;
 
 public class LightData {
 
-    private float lV;
-    long ts;
+    private float lightValue;
+    long timestamp;
 
     public LightData() {
 
     }
 
     public LightData(float lightValue, long timestamp) {
-        this.lV = lightValue;
-        this.ts = timestamp;
+        this.lightValue = lightValue;
+        this.timestamp = timestamp;
     }
 
     // getters and setters for the class
-    public float getlV() {
-        return lV;
+    public float getLightValue() {
+        return lightValue;
     }
 
-    public long getTs() {
-        return ts;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setlV(float lightValue) {
-        this.lV = lightValue;
+    public void setLightValue(float lightValue) {
+        this.lightValue = lightValue;
     }
 }
 

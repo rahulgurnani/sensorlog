@@ -14,13 +14,12 @@ import android.util.Log;
 
 
 import com.curefit.sensorsdk.data.MessageData;
-import com.curefit.sensorsdk.data.SleepData;
 import com.curefit.sensorsdk.db.DataStoreHelper;
 import com.curefit.sensorsdk.db.FirebaseStoreHelper;
 
-import com.curefit.sensorsdk.data.AccDataContracted;
+import com.curefit.sensorsdk.data.AggregatedLightData;
 import com.curefit.sensorsdk.data.LightData;
-import com.curefit.sensorsdk.data.LightDataContracted;
+import com.curefit.sensorsdk.data.AggregatedAccelerometerData;
 import com.curefit.sensorsdk.data.PayLoadJson;
 import com.curefit.sensorsdk.data.ScreenData;
 import com.curefit.sensorsdk.data.User;
@@ -78,7 +77,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * @param selectionArgs : the time upto  which we will aggregate the readings of the accelerometer.
      * @return : the aggregarted accelerometer readings
      */
-    private List<AccDataContracted> getAggAccelerometerData(String selectionArgs[]) {
+    private List<AggregatedAccelerometerData> getAggAccelerometerData(String selectionArgs[]) {
         String projectionAcc[] = { SensorDataContract.AccReadings.TIMESTAMP, SensorDataContract.AccReadings.ACCX,
                 SensorDataContract.AccReadings.ACCY, SensorDataContract.AccReadings.ACCZ};      // The columns that we need in our query.
         long currentMinuteEnd = -1;         // Keeps the value of the second at which the currentMinute ends
@@ -88,7 +87,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 SensorDataContract.AccReadings.TIMESTAMP + "<= ?", selectionArgs, null);    // Querying using the cursor
 
         List<AccelerometerData> accReadings = new ArrayList<>();        // the original accReadings, this array can be used for debugging purposes.
-        List<AccDataContracted> accAggReadings = new ArrayList<>();     // the Aggregated accReadings, this array is the one that we send over the server.
+        List<AggregatedAccelerometerData> accAggReadings = new ArrayList<>();     // the Aggregated accReadings, this array is the one that we send over the server.
         List<AccelerometerData> accReadingsWindow = new ArrayList<>();      // stores readings current window
 
 
@@ -112,7 +111,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 else {
                     if(accReadingsWindow.size() > 0) {
-                        accAggReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
+                        accAggReadings.add(new AggregatedAccelerometerData(accReadingsWindow, currentMinuteEnd - WINDOW));
                     }
                     accReadingsWindow = new ArrayList<>();
                     currentMinuteEnd = timestamp - (timestamp % WINDOW) + WINDOW;
@@ -122,7 +121,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         // The last window needs to be added explicitly
         if (accReadingsWindow.size() > 0) {
-            accAggReadings.add(new AccDataContracted(accReadingsWindow, currentMinuteEnd - WINDOW));
+            accAggReadings.add(new AggregatedAccelerometerData(accReadingsWindow, currentMinuteEnd - WINDOW));
         }
 
         return accAggReadings;
@@ -133,14 +132,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
      * @param selectionArgs : The time until which the readings need to be queried.
      * @return : returns the aggregated array of the readings.
      */
-    private List<LightDataContracted> getAggLightData(String selectionArgs[]) {
+    private List<AggregatedLightData> getAggLightData(String selectionArgs[]) {
         String projectionLight[] = { SensorDataContract.LightReadings.TIMESTAMP, SensorDataContract.LightReadings.LIGHT};
         long currentMinuteEnd = -1;         // Keeps the value of the second at which the currentMinute ends
 
         // Querying Light readings and contracting (aggregating) them over WINDOW.
         Cursor c = contentResolver.query(SensorDataContract.LightReadings.CONTENT_URI, projectionLight, SensorDataContract.LightReadings.TIMESTAMP + "<= ?", selectionArgs, null);
         List<LightData> lightReadings = new ArrayList<>();
-        List<LightDataContracted> lightContractedReadings = new ArrayList<>();
+        List<AggregatedLightData> lightContractedReadings = new ArrayList<>();
         List<LightData> lightReadingsWindow = new ArrayList<>();
         currentMinuteEnd = -1;
         if (c.moveToFirst()) {
@@ -158,7 +157,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
                 else {
                     if (lightReadingsWindow.size() > 0)
-                        lightContractedReadings.add(new LightDataContracted(lightReadingsWindow, currentMinuteEnd - WINDOW));
+                        lightContractedReadings.add(new AggregatedLightData(lightReadingsWindow, currentMinuteEnd - WINDOW));
                     lightReadingsWindow = new ArrayList<>();
                     lightReadings.add(data);
                     currentMinuteEnd = timestamp - (timestamp % WINDOW) + WINDOW;
@@ -167,7 +166,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         if(lightReadingsWindow.size() > 0)
-            lightContractedReadings.add(new LightDataContracted(lightReadingsWindow, currentMinuteEnd - WINDOW));
+            lightContractedReadings.add(new AggregatedLightData(lightReadingsWindow, currentMinuteEnd - WINDOW));
 
         return lightContractedReadings;
     }
@@ -234,7 +233,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         String selectionArgs[] = { String.valueOf(currentTime) };
 
         // Accelerometer
-        List<AccDataContracted> accAggReadings = getAggAccelerometerData(selectionArgs);
+        List<AggregatedAccelerometerData> accAggReadings = getAggAccelerometerData(selectionArgs);
 
         if(accAggReadings.size() > 0)
             alldata.put("acc_contracted", accAggReadings);
@@ -242,7 +241,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             flag_acc_absent = true;
 
         // Light
-        List<LightDataContracted> lightAggReadings = getAggLightData(selectionArgs);
+        List<AggregatedLightData> lightAggReadings = getAggLightData(selectionArgs);
         if (lightAggReadings.size() > 0)
             alldata.put("light_contracted", lightAggReadings);
         else
@@ -339,6 +338,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    /**
+     *
+     * @param alldata
+     */
     public void postDataToServer(PayLoadJson alldata) {
         SensorClient.getSensorService(mContext).postData(alldata).enqueue(new Callback<Object>() {
             @Override

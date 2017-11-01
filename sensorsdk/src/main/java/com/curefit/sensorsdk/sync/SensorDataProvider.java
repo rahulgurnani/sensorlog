@@ -118,12 +118,12 @@ public class SensorDataProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Cursor c;
+        Cursor cursor;
         switch (uriMatcher.match(uri)) {
             // Query for multiple article results
             case ACCELEROMETER:
                 Log.d("SensorApp", "Accelerometer");
-                c = db.query(SensorDataContract.AccReadings.TABLE_NAME,
+                cursor = db.query(SensorDataContract.AccReadings.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -132,7 +132,7 @@ public class SensorDataProvider extends ContentProvider {
                         sortOrder);
                 break;
             case USER:
-                c = db.query(SensorDataContract.UserData.TABLE_NAME,
+                cursor = db.query(SensorDataContract.UserData.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -141,7 +141,7 @@ public class SensorDataProvider extends ContentProvider {
                         sortOrder);
                 break;
             case LIGHT:
-                c = db.query(SensorDataContract.LightReadings.TABLE_NAME,
+                cursor = db.query(SensorDataContract.LightReadings.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -150,7 +150,7 @@ public class SensorDataProvider extends ContentProvider {
                         sortOrder);
                 break;
             case SCREEN:
-                c = db.query(SensorDataContract.ScreenReadings.TABLE_NAME,
+                cursor = db.query(SensorDataContract.ScreenReadings.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -159,7 +159,7 @@ public class SensorDataProvider extends ContentProvider {
                         sortOrder);
                 break;
             case MESSAGE:
-                c = db.query(SensorDataContract.MessageData.TABLE_NAME,
+                cursor = db.query(SensorDataContract.MessageData.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -172,8 +172,10 @@ public class SensorDataProvider extends ContentProvider {
 
         // Tell the cursor to register a content observer to observe changes to the
         // URI or its descendants.
-        assert getContext() != null;
-        c.setNotificationUri(getContext().getContentResolver(), uri);
-        return c;
+         if(getContext() != null){
+             cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+         }
+        return cursor;
     }
 }

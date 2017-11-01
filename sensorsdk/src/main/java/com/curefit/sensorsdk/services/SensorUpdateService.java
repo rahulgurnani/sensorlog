@@ -24,7 +24,6 @@ import com.google.firebase.FirebaseApp;
 import static java.lang.Math.abs;
 
 public class SensorUpdateService extends Service implements SensorEventListener {
-    private DataStoreHelper dsh;
     private SensorManager sensorManager;
     private Sensor mAccelerometer;
     private Sensor mLight;
@@ -38,7 +37,6 @@ public class SensorUpdateService extends Service implements SensorEventListener 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        dsh = DataStoreHelper.getInstance(this);
         lastValues = new float[3];
         FirebaseApp.initializeApp(this);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -54,7 +52,6 @@ public class SensorUpdateService extends Service implements SensorEventListener 
         registerReceiver(screenReceiver, filter);
 
         return START_STICKY;
-
     }
 
     @Nullable
@@ -67,7 +64,6 @@ public class SensorUpdateService extends Service implements SensorEventListener 
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
-
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {

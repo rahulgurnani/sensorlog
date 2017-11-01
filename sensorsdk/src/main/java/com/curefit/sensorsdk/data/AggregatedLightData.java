@@ -10,7 +10,7 @@ import java.util.List;
  * Created by rahul on 06/09/17.
  */
 
-public class LightDataContracted {
+public class AggregatedLightData {
     public int n = 0;
     @PropertyName("a")
     public float mean = 0;
@@ -22,26 +22,27 @@ public class LightDataContracted {
     public float min = Float.POSITIVE_INFINITY;
     @PropertyName("e")
     public float std = 0;
-    public long ts;
+    @PropertyName("ts")
+    public long timestamp;
     @PropertyName("f")
-    public float lLI = 0;
+    public float lastLightIntensity = 0;
 
-    public LightDataContracted(List<LightData> alldata, long timestamp) {
+    public AggregatedLightData(List<LightData> alldata, long timestamp) {
         n = alldata.size();
         float intensities[] = new float[n];
         for (int i = 0 ; i < alldata.size(); i++ ) {
-            mean += alldata.get(i).getlV();
-            max = Math.max(alldata.get(i).getlV(), max);
-            min = Math.min(alldata.get(i).getlV(), min);
-            intensities[i] = alldata.get(i).getlV();
-            lLI = alldata.get(i).getlV();
+            mean += alldata.get(i).getLightValue();
+            max = Math.max(alldata.get(i).getLightValue(), max);
+            min = Math.min(alldata.get(i).getLightValue(), min);
+            intensities[i] = alldata.get(i).getLightValue();
+            lastLightIntensity = alldata.get(i).getLightValue();
         }
         mean  = mean / n;
 
         std = Utility.computeStd(intensities, n, mean);
         median = Utility.computeMedian(intensities, n);
 
-        this.ts = timestamp;
+        this.timestamp = timestamp;
     }
 
 //    public int getN() {

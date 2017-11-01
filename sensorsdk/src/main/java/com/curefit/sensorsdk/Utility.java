@@ -19,11 +19,12 @@ public class Utility {
      * @return
      */
     public static float magnitude(List<Float> val) {
-        float x = val.get(0);
-        float y = val.get(1);
-        float z = val.get(2);
+        float squaredSum = 0;
+        for (int i = 0; i < val.size(); i++) {
+            squaredSum += val.get(0)*val.get(0) + val.get(1)*val.get(1) + val.get(2)*val.get(2);
+        }
 
-        return (float) (Math.sqrt(x*x + y*y + z*z));
+        return (float) (Math.sqrt(squaredSum));
     }
 
     /**
@@ -41,7 +42,6 @@ public class Utility {
         }
         std = std / n;
         return (float) Math.sqrt(std);
-
     }
 
     /**
@@ -66,4 +66,20 @@ public class Utility {
         return dateFormat.format(date);
     }
 
+    /**
+     * Computes vectorial difference between accelerometer values
+     * @param a1
+     * @param a2
+     * @return
+     */
+    public static float vectorialDifference(List<Float> a1, List<Float> a2) {
+        float delta[] = new float[a1.size()];
+
+        float difference = 0;
+        for (int i=0; i < a1.size(); i++) {
+            difference = difference + delta[i]*delta[i];
+        }
+
+        return (float)Math.sqrt(difference);
+    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * Created by rahul on 06/09/17.
  */
 
-public class AccDataContracted {
+public class AggregatedAccelerometerData {
     // we will serialize the names into small strings and so that the amount of data tranfered is less
     @PropertyName("n")
     public int n = 0;      // number of readings
@@ -36,37 +36,27 @@ public class AccDataContracted {
     @PropertyName("j")
     public float stdChg = 0;
 
-    public long ts;
+    public long timestamp;
 
     /**
-     * Computes vectorial difference between accelerometer values
-     * @param a1
-     * @param a2
-     * @return
+     * Computes aggregates value from the given list of data of accelerometer
+     * @param alldata list of accelerometer data
+     * @param timestamp the minute for which data is aggregated etc.
      */
-    private float vectorialDifference(List<Float> a1, List<Float> a2) {
-        float deltaX = a1.get(0) - a2.get(0);
-        float deltaY = a1.get(1) - a2.get(1);
-        float deltaZ = a1.get(2) - a2.get(2);
-
-        float difference = deltaX*deltaX + deltaY*deltaY + deltaZ*deltaZ;
-        return (float)Math.sqrt(difference);
-    }
-
-    public AccDataContracted(List<AccelerometerData> alldata, long timestamp) {
+    public AggregatedAccelerometerData(List<AccelerometerData> alldata, long timestamp) {
         n = alldata.size();
         float magnitudes[] = new float[n];
         float changes[] = new float[n-1];
-        this.ts = timestamp;
+        this.timestamp = timestamp;
 
         for(int i=0; i<alldata.size(); i++) {
-            float current = Utility.magnitude(alldata.get(i).aV);
+            float current = Utility.magnitude(alldata.get(i).accelerometerValue);
             magnitudes[i] = current;
             meanAbs += current;
             maxAbs = Math.max(maxAbs, current);
             minAbs = Math.min(minAbs, current);
             if(i > 0) {
-                float diff = vectorialDifference(alldata.get(i).aV, alldata.get(i-1).aV);
+                float diff = Utility.vectorialDifference(alldata.get(i).accelerometerValue, alldata.get(i-1).accelerometerValue);
                 changes[i-1] = diff;
                 meanChg += diff;
                 maxChg = Math.max(maxChg, diff);
@@ -90,53 +80,5 @@ public class AccDataContracted {
             meanChg = maxChg = minChg = stdChg = mdChg = 0;
         }
     }
-
-//    public long getTs() {
-//        return ts;
-//    }
-//
-//    public float getStdAbs() {
-//        return stdAbs;
-//    }
-//
-//    public float getMinAbs() {
-//        return minAbs;
-//    }
-//
-//    public float getMaxAbs() {
-//        return maxAbs;
-//    }
-//
-//    public float getMaxChg() {
-//        return maxChg;
-//    }
-//
-//    public float getMdAbs() {
-//        return mdAbs;
-//    }
-//
-//    public float getMdChg() {
-//        return mdChg;
-//    }
-//
-//    public float getMeanAbs() {
-//        return meanAbs;
-//    }
-//
-//    public float getMeanChg() {
-//        return meanChg;
-//    }
-//
-//    public float getMinChg() {
-//        return minChg;
-//    }
-//
-//    public float getStdChg() {
-//        return stdChg;
-//    }
-//
-//    public int getN() {
-//        return n;
-//    }
 }
 

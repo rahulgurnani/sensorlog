@@ -69,7 +69,6 @@ public class SensorSdk {
         builder.mContext.startService(i);
     }
 
-
     public static void endService() {
         Log.d("SensorApp", "endService");
 
@@ -92,7 +91,7 @@ public class SensorSdk {
         Intent i = new Intent(builder.mContext, SensorUpdateService.class);
         builder.mContext.stopService(i);
 
-        SyncUtils.stopSync(builder.mContext);       // TODO confirm this ?
+        SyncUtils.stopSync(builder.mContext);
     }
 
 

@@ -94,7 +94,6 @@ public class SensorSdk {
         SyncUtils.stopSync(builder.mContext);
     }
 
-
     public static class Builder  {
         private String deviceId;
         private String userId;

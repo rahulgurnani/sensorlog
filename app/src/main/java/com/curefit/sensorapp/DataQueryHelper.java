@@ -17,11 +17,15 @@ import java.util.Locale;
 
 /**
  * Created by rahul on 26/09/17.
+ *
  */
 
+/**
+ * DataQueryHelper helps us in getting sleep data, getting stats etc.
+ */
 public class DataQueryHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 13;
-    public static final String DATABASE_NAME = "datastorer.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "sensordata.db";
 
     private static DataQueryHelper dqh = null;
     private static SQLiteDatabase db = null;
@@ -42,7 +46,7 @@ public class DataQueryHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int olderVersion, int newerVersion) {
 
     }
 

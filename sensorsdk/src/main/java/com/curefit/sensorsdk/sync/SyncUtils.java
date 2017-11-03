@@ -19,7 +19,7 @@ public class SyncUtils {
     private static final String PREF_SETUP_COMPLETE = "setup_complete";
     public static final String ACCOUNT = "SensorApp";       // TODO update this name accordingly
     public static String ACCOUNT_TYPE = null;
-    
+
     public static void CreateSyncAccount(Context context) {
         boolean newAccount = false;
         boolean setupComplete = PreferenceManager

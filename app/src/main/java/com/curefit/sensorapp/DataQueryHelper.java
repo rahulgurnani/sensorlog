@@ -54,7 +54,6 @@ public class DataQueryHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        System.out.println("--------- On create method called ------");
         db.execSQL(SQL_CREATE_ACC);
         db.execSQL(SQL_CREATE_LIGHT);
         db.execSQL(SQL_CREATE_SCREEN);

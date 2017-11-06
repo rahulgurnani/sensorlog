@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataStoreHelper extends SQLiteOpenHelper {
 
     // SQL queries for creating tables
-    public static final int DATABASE_VERSION = 13;
-    public static final String DATABASE_NAME = "datastorer.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "sensordata.db";
 
     // Table names
     private static final String TABLE_ACC = "AccData";

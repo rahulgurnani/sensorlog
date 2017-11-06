@@ -32,9 +32,21 @@ public class DataQueryHelper extends SQLiteOpenHelper {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final String TABLE_SLEEP= "SleepData";
+    private static final String TABLE_ACC = "AccData";
+    private static final String TABLE_SCREEN = "ScreenData";
+    private static final String TABLE_LIGHT = "LightData";
     private static final String TABLE_USER = "UserData";
     private static final String TABLE_STATS = "StatsData";
+    private static final String TABLE_SLEEP= "SleepData";
+    private static final String TABLE_MESSAGE= "MessageData";;
+
+    private static final String SQL_CREATE_ACC = "CREATE TABLE " + TABLE_ACC + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, ACCX REAL, ACCY REAL, ACCZ REAL)";
+    private static final String SQL_CREATE_SCREEN= "CREATE TABLE " + TABLE_SCREEN + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, STATE INTEGER)";
+    private static final String SQL_CREATE_LIGHT = "CREATE TABLE " + TABLE_LIGHT + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURTIME INTEGER, LIGHT FLOAT)";
+    private static final String SQL_CREATE_USER = "CREATE TABLE " + TABLE_USER + "(ID INTEGER PRIMARY KEY AUTOINCREMENT,CURTIME INTEGER, NAME TEXT, EMAIL TEXT)";
+    private static final String SQL_CREATE_STATS = "CREATE TABLE " + TABLE_STATS + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, SENSORNAME TEXT, LASTTIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP, NUMBERVALS TEXT)";
+    private static final String SQL_CREATE_SLEEP = "CREATE TABLE " + TABLE_SLEEP + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, HOUR INTEGER, MINUTE INTEGER, TYPE TEXT)";
+    private static final String SQL_CREATE_MESSAGE = "CREATE TABLE " + TABLE_MESSAGE + "(ID INTEGER PRIMARY KEY AUTOINCREMENT, CURTIME INTEGER, MESSAGE TEXT)";
 
     private DataQueryHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +54,14 @@ public class DataQueryHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        System.out.println("--------- On create method called ------");
+        db.execSQL(SQL_CREATE_ACC);
+        db.execSQL(SQL_CREATE_LIGHT);
+        db.execSQL(SQL_CREATE_SCREEN);
+        db.execSQL(SQL_CREATE_USER);
+        db.execSQL(SQL_CREATE_STATS);
+        db.execSQL(SQL_CREATE_SLEEP);
+        db.execSQL(SQL_CREATE_MESSAGE);
     }
 
     @Override

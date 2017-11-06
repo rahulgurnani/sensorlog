@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         dataQueryHelper = DataQueryHelper.getInstance(this);
         User user = dataQueryHelper.getUser();
+
         nameText = (EditText) findViewById(R.id.nameText);
         emailText = (EditText) findViewById(R.id.emailText);
         if(user!=null) {

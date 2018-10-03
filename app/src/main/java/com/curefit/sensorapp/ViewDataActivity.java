@@ -26,7 +26,7 @@ public class ViewDataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_allactions);
         dsh = DataStoreHelper.getInstance(this);
 
-        GlobalVariable globalVariable = GlobalVariable.getInstance();
+        GlobalVariable globalVariable = GlobalVariable.getInstance(this.getApplicationContext());
 
         // creating buttons
         final Button lightButton = (Button) findViewById(R.id.light_button);

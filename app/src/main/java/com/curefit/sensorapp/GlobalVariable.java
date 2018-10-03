@@ -1,5 +1,6 @@
 package com.curefit.sensorapp;
 
+import android.app.Application;
 import android.content.Context;
 
 import com.curefit.sensorapp.data.User;
@@ -16,40 +17,21 @@ public class GlobalVariable {
     private User user;
     private static GlobalVariable globalVariable = null;
     public static String URL;     // Firebase storage URL
-    private static Context context;
 
-    /*
-        Private contructor because the class is singelton.
-     */
-    private GlobalVariable() {
-        URL = getContext().getString(R.string.FIREBASE_URL);
-        firebaseStoreHelper = new FirebaseStoreHelper(URL);
+    private GlobalVariable(Context context) {
+        firebaseStoreHelper = new FirebaseStoreHelper(context.getString(R.string.FIREBASE_URL));
     }
 
-    /*
-        This is a singelton class, so to get the instance of this class.
-     */
-    public static GlobalVariable getInstance() {
+    public static GlobalVariable getInstance(Context applicationContext) {
         if (globalVariable == null) {
-            globalVariable = new GlobalVariable();
+            globalVariable = new GlobalVariable(applicationContext);
         }
 
         return globalVariable;
     }
 
-    /*
-        must set the user.
-     */
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
-    public Context getContext() {
-        return context;
     }
 
     public FirebaseStoreHelper getFirebaseStoreHelper() {

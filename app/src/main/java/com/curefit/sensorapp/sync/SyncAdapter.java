@@ -17,6 +17,7 @@ import android.util.Log;
 import com.curefit.sensorapp.FirebaseStoreHelper;
 import com.curefit.sensorapp.GlobalVariable;
 import com.curefit.sensorapp.PayLoad;
+import com.curefit.sensorapp.R;
 import com.curefit.sensorapp.SensorData;
 import com.curefit.sensorapp.data.AccDataContracted;
 import com.curefit.sensorapp.data.LightData;
@@ -259,7 +260,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         User user = new User(username, email);
         // send it to firebase database
         FirebaseApp.initializeApp(mContext);
-        FirebaseStoreHelper f = new FirebaseStoreHelper(GlobalVariable.URL);
+        FirebaseStoreHelper f = new FirebaseStoreHelper(mContext.getString(R.string.FIREBASE_URL));
         f.sendData(alldata, user, currentTime);
 
         // Delete the entries

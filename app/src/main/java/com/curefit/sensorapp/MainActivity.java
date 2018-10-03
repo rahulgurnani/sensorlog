@@ -52,9 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private void performLogin(User user) {
         Context context = getApplicationContext();
 
-        globalVariable = GlobalVariable.getInstance();
+        globalVariable = GlobalVariable.getInstance(context);
         globalVariable.setUser(user);
-        globalVariable.setContext(context);
         SyncUtils.CreateSyncAccount(this);
         SyncAdapter.performSync();
         if (!(dataStoreHelper.getSleepData().getSu() && dataStoreHelper.getSleepData().getEu())) {

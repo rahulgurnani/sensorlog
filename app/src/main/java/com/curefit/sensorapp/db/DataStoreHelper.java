@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 
 public class DataStoreHelper extends SQLiteOpenHelper {
-
+    private static Context applicationContext;
     // SQL queries for creating tables
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "datastorer.db";
@@ -54,7 +54,6 @@ public class DataStoreHelper extends SQLiteOpenHelper {
 
     private DataStoreHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -74,6 +73,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         if(dsh == null) {
             dsh = new DataStoreHelper(context);
         }
+        DataStoreHelper.applicationContext = context.getApplicationContext();
         return dsh;
     }
 
@@ -148,7 +148,7 @@ public class DataStoreHelper extends SQLiteOpenHelper {
         Send payload over firebase
      */
     private void postPayLoad(PayLoad payLoad, String type) {
-        GlobalVariable.getInstance().getFirebaseStoreHelper().sendData(payLoad, type);
+        GlobalVariable.getInstance(applicationContext).getFirebaseStoreHelper().sendData(payLoad, type);
     }
 
     /**

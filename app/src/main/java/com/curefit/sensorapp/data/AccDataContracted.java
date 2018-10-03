@@ -32,11 +32,15 @@ public class AccDataContracted {
 
 
     public AccDataContracted(List<AccelerometerData> alldata, long timestamp) {
+        n = alldata.size();
+        if (n == 0) {
+            // do something
+            return;
+        }
         float magnitudes[] = new float[n];
         float changes[] = new float[n-1];
 
         this.timestamp = timestamp;
-        n = alldata.size();
 
         for(int i=0; i<alldata.size(); i++) {
             float current = Utility.magnitude(alldata.get(i).aV);

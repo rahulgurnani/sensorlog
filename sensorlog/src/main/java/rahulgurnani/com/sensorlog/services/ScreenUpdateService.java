@@ -1,15 +1,12 @@
-package com.curefit.sensorapp.services;
+package rahulgurnani.com.sensorlog.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.curefit.sensorapp.db.DataStoreHelper;
+import rahulgurnani.com.sensorlog.db.DataStoreHelper;
 
-/**
- * Created by rahul on 31/07/17.
- */
 
 public class ScreenUpdateService extends Service {
 
@@ -44,6 +41,7 @@ public class ScreenUpdateService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {

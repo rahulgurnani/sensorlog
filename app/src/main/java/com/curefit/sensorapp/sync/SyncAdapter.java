@@ -9,16 +9,11 @@ import android.content.OperationApplicationException;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
 
 import com.curefit.sensorapp.FirebaseStoreHelper;
-import com.curefit.sensorapp.GlobalVariable;
-import com.curefit.sensorapp.PayLoad;
 import com.curefit.sensorapp.R;
-import com.curefit.sensorapp.SensorData;
 import com.curefit.sensorapp.data.AccDataContracted;
 import com.curefit.sensorapp.data.LightData;
 import com.curefit.sensorapp.data.LightDataContracted;
@@ -26,37 +21,16 @@ import com.curefit.sensorapp.data.PayLoadJson;
 import com.curefit.sensorapp.data.ScreenData;
 import com.curefit.sensorapp.data.User;
 import com.curefit.sensorapp.data.AccelerometerData;
-import com.curefit.sensorapp.db.DataStoreHelper;
 import com.curefit.sensorapp.network.SensorClient;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.Transaction;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.ByteArrayEntity;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-/**
- * Created by rahul on 23/08/17.
- */
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     ContentResolver contentResolver;

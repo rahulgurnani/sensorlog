@@ -1,40 +1,38 @@
-package com.curefit.sensorapp.services;
+package rahulgurnani.com.sensorlog.services;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.curefit.sensorapp.db.DataStoreHelper;
 
-/**
- * Created by rahul on 31/07/17.
+import rahulgurnani.com.sensorlog.db.DataStoreHelper;
+
+/*
+    Service to update battery state change
  */
-
-public class ScreenUpdateService extends Service {
+public class BatteryUpdateService extends Service {
 
     private DataStoreHelper dsh;
     @Override
     public void onCreate() {
-
         super.onCreate();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        System.out.println("adding screen Screen update service called");
         dsh = DataStoreHelper.getInstance(this);
-        System.out.println("Service started");
-        boolean screenOn = intent.getBooleanExtra("screen_state", false);
-        if (!screenOn) {
-            System.out.println("Screen Off");
+        System.out.println("Battery update Service started");
+        boolean chargingState = intent.getBooleanExtra("charging_state", false);
+        if (!chargingState) {
+            System.out.println("Not charging");
             // write code to store the data to database
-            dsh.addEntryScreen(0);
+            dsh.addEntryCharging(0);
         }
         else {
-            System.out.println("Screen On");
+            System.out.println("Charging");
             // write code to store the data to database
-            dsh.addEntryScreen(1);
+            dsh.addEntryCharging(1);
         }
         return START_NOT_STICKY;
     }
